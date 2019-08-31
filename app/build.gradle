@@ -37,4 +37,29 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+//    // Maps
+//    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+//    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+//    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    // Fresco
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+
+    //    firebase messages
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+
+    // Retrofit
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "com.squareup.retrofit2:retrofit:2.3.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+
+    // Check networking logs
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
+    //Facebook
+    implementation 'com.facebook.android:facebook-login:4.32.0'
 }
