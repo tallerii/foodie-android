@@ -37,5 +37,3 @@ android:
     before_script:
       - mkdir -p "$ANDROID_HOME/licenses"
       - cp ./google-licenses/* "$ANDROID_HOME/licenses/"
-  notifications:
-    email: false
