@@ -28,9 +28,7 @@ android:
     - 'google-gdk-license-.+'
     before_script:
       - chmod +x gradlew
-
     script:
       - ./gradlew assembleDebug --stacktrace
-
   notifications:
     email: false
