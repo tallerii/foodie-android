@@ -1,11 +1,33 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:actionBarTheme">@style/Foodie.ActionBarTheme</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:textColorPrimaryInverse">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">
+            @color/colorPrimary
+        </item>
+
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+
+    <style name="Foodie.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Light">
+        <!-- THIS is where you can color the arrow! -->
+        <item name="android:colorControlNormal">?colorPrimary</item>
+        <item name="titleTextColor">@color/black</item>
     </style>
 
 </resources>
