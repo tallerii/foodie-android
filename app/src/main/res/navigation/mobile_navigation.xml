@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.ruitzei.foodie.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:name="com.ruitzei.foodie.ui.profile.ProfileFragment"
+        android:label="@string/title_user_profile"
         tools:layout="@layout/fragment_notifications" />
 </navigation>
