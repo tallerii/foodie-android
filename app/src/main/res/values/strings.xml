@@ -4,4 +4,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_user_profile">Mi perfil</string>
+    <string name="facebook_app_id">1759590304174672</string> <string name="fb_login_protocol_scheme">fb1759590304174672</string>
 </resources>

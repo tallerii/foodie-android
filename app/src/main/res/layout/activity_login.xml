@@ -48,7 +48,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-
         android:text="LOGIN"
         android:layout_marginTop="20dp"
         android:id="@+id/login_button"
@@ -62,5 +61,26 @@
         app:strokeWidth="2dp"
         android:layout_height="wrap_content">
     </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fb_login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Iniciar sesión con Facebook"
+        android:textColor="@color/white"
+        android:theme="@style/Theme.MaterialComponents"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:strokeColor="@color/colorAccent"
+        app:strokeWidth="2dp"/>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fb_login_btn_secret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
