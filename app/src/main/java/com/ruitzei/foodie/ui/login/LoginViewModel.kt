@@ -11,4 +11,8 @@ class LoginViewModel : ViewModel() {
     fun performLogin(username: String, password: String) {
         loginAction.sendAction(User())
     }
+
+    fun performFBLogin(token: String) {
+        loginAction.sendAction(User())
+    }
 }

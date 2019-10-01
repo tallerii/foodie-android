@@ -2,9 +2,12 @@ package com.ruitzei.foodie.application
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.ruitzei.foodie.service.ApiCalls
 import com.ruitzei.foodie.service.RestClient
+
 
 class FoodieApplication: Application() {
     var api: ApiCalls? = null
@@ -15,8 +18,8 @@ class FoodieApplication: Application() {
         instance = this
 
         Fresco.initialize(this)
-//        FacebookSdk.sdkInitialize(applicationContext)
-//        AppEventsLogger.activateApp(this)
+        FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(this)
 
         api = RestClient.createPublicApi()
     }
