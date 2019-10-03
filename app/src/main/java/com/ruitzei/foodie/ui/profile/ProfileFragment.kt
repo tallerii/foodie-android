@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import com.ruitzei.foodie.R
-import com.ruitzei.foodie.model.User
+import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.utils.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -30,17 +30,16 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = User.mockedUser()
+        val user = UserData.user
 
-        profile_name.setText(user.name)
-        profile_phone.setText(user.phoneNumber)
-        profile_email.setText(user.mail)
-        profile_rol.setText(user.rol)
-        profile_rol.setText(user.rol)
-        profile_subscription.setText(user.subscription)
-        profile_balance.setText(user.balance.toString())
+        profile_name.setText(user?.name)
+        profile_phone.setText(user?.phoneNumber)
+        profile_email.setText(user?.mail)
+//        profile_rol.setText(user?.rol)
+        profile_subscription.setText(user?.isDelivery.toString())
+        profile_balance.setText(user?.balance.toString())
 
-        profile_avatar.loadImage(user.avatar)
+        profile_avatar.loadImage(user?.avatar?: "")
 
         profile_change_avatar_btn.setOnClickListener {
             viewModel?.changeAvatar("")

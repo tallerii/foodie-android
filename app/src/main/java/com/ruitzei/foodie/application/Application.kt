@@ -11,7 +11,6 @@ import com.ruitzei.foodie.service.RestClient
 
 class FoodieApplication: Application() {
     var api: ApiCalls? = null
-        private set
 
     override fun onCreate() {
         super.onCreate()
