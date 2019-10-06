@@ -1,6 +1,7 @@
 package com.ruitzei.foodie.service
 
 import com.ruitzei.foodie.application.FoodieApplication
+import com.ruitzei.foodie.model.LatLong
 import com.ruitzei.foodie.model.LoginPostData
 import com.ruitzei.foodie.model.LoginResponse
 import com.ruitzei.foodie.model.User
@@ -33,5 +34,23 @@ object Api {
         }
 
         request.enqueue(apiCalls!!.getUserData(userId), listener)
+    }
+
+    fun getLoggedInUserData(listener: RequestCallbacks<User>) {
+        val request = object: AbstractRequest<User>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.getLoggedInUserData(), listener)
+    }
+
+    fun updateLatLong(latLong: LatLong, listener: RequestCallbacks<User>) {
+        val request = object: AbstractRequest<User>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.updateLatLong(latLong), listener)
     }
 }
