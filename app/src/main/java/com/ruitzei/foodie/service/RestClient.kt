@@ -1,8 +1,10 @@
 package com.ruitzei.foodie.service
 
 import com.google.gson.GsonBuilder
+import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.ui.Config
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,13 +22,19 @@ object RestClient {
         httpClient.addInterceptor { chain ->
             val original = chain.request()
 
-            val request = original.newBuilder()
+            val request: Request
+            if (UserData.token.isNullOrEmpty()) {
+                request = original.newBuilder()
                     .header("Content-Type", "application/json")
-//                    .header("Authorization", "Bearer ${UserData.getToken()?: ""}")
-//                    .header("latitude", UserData.getLatestLocation()?.latitude?.toString()?: "")
-//                    .header("longitude", UserData.getLatestLocation()?.longitude?.toString()?: "")
                     .method(original.method(), original.body())
                     .build()
+            } else {
+                request = original.newBuilder()
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Token ${UserData.token}")
+                    .method(original.method(), original.body())
+                    .build()
+            }
 
             chain.proceed(request)
         }
