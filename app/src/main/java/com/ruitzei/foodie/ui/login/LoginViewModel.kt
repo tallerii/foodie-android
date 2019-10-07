@@ -21,7 +21,7 @@ class LoginViewModel : ViewModel() {
                 FoodieApplication.instance?.api = RestClient.createPublicApi()
 
                 // TODO: REMOVE HARDCODING
-                Api.getUserData("012b6d1b-73e8-4a84-bfec-405de3d37da8", object : RequestCallbacks<User> {
+                Api.getLoggedInUserData( object : RequestCallbacks<User> {
                     override fun onSuccess(response: User) {
                         UserData.user= response
                         loginAction.sendAction(User())
