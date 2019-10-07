@@ -48,8 +48,8 @@ abstract class AbstractRequest<T> {
                     try {
                         val jelement = JsonParser().parse(response.errorBody()!!.string())
                         val gson = Gson()
-                        val err = gson.fromJson<SimpleError>(jelement, SimpleError::class.java!!)
-                        listener.onFailure(err.error!!, response.code(), Throwable("Wrong response code, got " + response.code() + " expected was: " + successCode))
+//                        val err = gson.fromJson<SimpleError>(jelement, SimpleError::class.java!!)
+                        listener.onFailure("Error", response.code(), Throwable("Wrong response code, got " + response.code() + " expected was: " + successCode))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "Request failed")

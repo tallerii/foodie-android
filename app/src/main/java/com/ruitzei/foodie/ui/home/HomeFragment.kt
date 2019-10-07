@@ -1,7 +1,6 @@
 package com.ruitzei.foodie.ui.home
 
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
