@@ -1,9 +1,6 @@
 package com.ruitzei.foodie.service
 
-import com.ruitzei.foodie.model.LatLong
-import com.ruitzei.foodie.model.LoginPostData
-import com.ruitzei.foodie.model.LoginResponse
-import com.ruitzei.foodie.model.User
+import com.ruitzei.foodie.model.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -11,14 +8,19 @@ import retrofit2.http.*
  * Created by ruitzei on 3/17/18.
  */
 interface ApiCalls {
-    @GET("clients   /")
+    @GET("clients/")
     fun users(
             @Query("name") name: String?
     ): Call<List<String>>
 
-    @POST("api-token-auth/")
+    @POST("token-auth/username/")
     fun login(
         @Body loginData: LoginPostData
+    ): Call<LoginResponse>
+
+    @POST("token-auth/facebook/")
+    fun loginWithFacebook(
+        @Body loginData: FacebookLoginPostData
     ): Call<LoginResponse>
 
     @GET("clients/{id}/")
@@ -31,4 +33,7 @@ interface ApiCalls {
 
     @PATCH("clients/self/")
     fun updateLatLong(@Body latLong: LatLong): Call<User>
+
+    @PATCH("clients/self/")
+    fun updateUserData(@Body userDataUpdatePostData: UserDataUpdatePostData): Call<User>
 }

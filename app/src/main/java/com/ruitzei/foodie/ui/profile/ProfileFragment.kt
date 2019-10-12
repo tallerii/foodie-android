@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import com.ruitzei.foodie.R
+import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.utils.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -31,7 +32,10 @@ class ProfileFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val user = UserData.user
+        updateUserData(user)
+    }
 
+    private fun updateUserData(user: User?) {
         profile_name.setText(user?.name)
         profile_phone.setText(user?.phoneNumber)
         profile_email.setText(user?.mail)
@@ -63,7 +67,10 @@ class ProfileFragment : BaseFragment() {
                     setDisabled()
                 }
 
-                viewModel?.changeAvatar("")
+                val name = profile_name
+                val phone = profile_phone
+                val email= profile_email
+                viewModel?.updateFields(name.text.toString(), phone.text.toString(), email.text.toString())
             }
         }
 
@@ -109,6 +116,22 @@ class ProfileFragment : BaseFragment() {
                     }
                     Resource.Status.SUCCESS -> {
                         profile_avatar.loadImage(it.data!!)
+                    }
+                }
+            }
+        })
+
+        viewModel?.userUpdateResponse?.observe(this, Observer { data ->
+            data?.let {
+                when (data.status) {
+                    Resource.Status.LOADING -> {
+
+                    }
+                    Resource.Status.ERROR -> {
+
+                    }
+                    Resource.Status.SUCCESS -> {
+                        updateUserData(it.data)
                     }
                 }
             }

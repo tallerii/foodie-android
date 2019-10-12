@@ -1,10 +1,7 @@
 package com.ruitzei.foodie.service
 
 import com.ruitzei.foodie.application.FoodieApplication
-import com.ruitzei.foodie.model.LatLong
-import com.ruitzei.foodie.model.LoginPostData
-import com.ruitzei.foodie.model.LoginResponse
-import com.ruitzei.foodie.model.User
+import com.ruitzei.foodie.model.*
 import java.net.HttpURLConnection.HTTP_OK
 
 /**
@@ -25,6 +22,15 @@ object Api {
         }
 
         request.enqueue(apiCalls!!.login(LoginPostData( username, password)), listener)
+    }
+
+    fun performFacebookLogin(fbToken: String, listener: RequestCallbacks<LoginResponse>) {
+        val request = object: AbstractRequest<LoginResponse>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.loginWithFacebook(FacebookLoginPostData(fbToken)), listener)
     }
 
     fun getUserData(userId: String, listener: RequestCallbacks<User>) {
@@ -52,5 +58,14 @@ object Api {
         }
 
         request.enqueue(apiCalls!!.updateLatLong(latLong), listener)
+    }
+
+    fun updateUserData(name: String, phoneNumber: String, mail: String, listener: RequestCallbacks<User>) {
+        val request = object: AbstractRequest<User>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.updateUserData(UserDataUpdatePostData(name, phoneNumber, mail)), listener)
     }
 }

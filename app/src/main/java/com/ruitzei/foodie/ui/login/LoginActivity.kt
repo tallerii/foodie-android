@@ -39,7 +39,7 @@ class LoginActivity: BaseActivity() {
             fb_login_btn_secret.performClick()
         }
 
-        fb_login_btn_secret.setReadPermissions("email")
+        fb_login_btn_secret.setReadPermissions("public_profile", "email")
         // Callback registration
         fb_login_btn_secret.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {

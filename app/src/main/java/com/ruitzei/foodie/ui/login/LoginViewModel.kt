@@ -17,20 +17,7 @@ class LoginViewModel : ViewModel() {
     fun performLogin(username: String, password: String) {
         Api.performLogin(username, password, object : RequestCallbacks<LoginResponse> {
             override fun onSuccess(response: LoginResponse) {
-                UserData.token = response.token
-                FoodieApplication.instance?.api = RestClient.createPublicApi()
-
-                // TODO: REMOVE HARDCODING
-                Api.getLoggedInUserData( object : RequestCallbacks<User> {
-                    override fun onSuccess(response: User) {
-                        UserData.user= response
-                        loginAction.sendAction(User())
-                    }
-
-                    override fun onFailure(error: String?, code: Int, t: Throwable) {
-                        // TODO: DO something
-                    }
-                })
+                loginWithAppToken(response.token)
             }
 
             override fun onFailure(error: String?, code: Int, t: Throwable) {
@@ -40,6 +27,30 @@ class LoginViewModel : ViewModel() {
     }
 
     fun performFBLogin(token: String) {
-        loginAction.sendAction(User())
+        Api.performFacebookLogin(token, object : RequestCallbacks<LoginResponse> {
+            override fun onSuccess(response: LoginResponse) {
+                loginWithAppToken(response.token)
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                // TODO: ERROR
+            }
+        })
+    }
+
+    private fun loginWithAppToken(token: String) {
+        UserData.token = token
+        FoodieApplication.instance?.api = RestClient.createPublicApi()
+
+        Api.getLoggedInUserData( object : RequestCallbacks<User> {
+            override fun onSuccess(response: User) {
+                UserData.user= response
+                loginAction.sendAction(User())
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                // TODO: DO something
+            }
+        })
     }
 }
