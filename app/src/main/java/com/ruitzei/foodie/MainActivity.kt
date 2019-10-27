@@ -13,8 +13,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
+import com.ruitzei.foodie.ui.order.NewOrderActivity
 import com.ruitzei.foodie.utils.BaseActivity
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.toolbar.toolbar
 
 class MainActivity : BaseActivity() {
 
@@ -38,6 +40,10 @@ class MainActivity : BaseActivity() {
         navView.setupWithNavController(navController)
 
         printFirebaseToken()
+
+        fab.setOnClickListener {
+            startActivity(NewOrderActivity.newIntent(this))
+        }
     }
 
     override fun onStart() {
