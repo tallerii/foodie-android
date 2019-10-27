@@ -2,41 +2,55 @@ package com.ruitzei.foodie.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.ruitzei.foodie.MainActivity
 import com.ruitzei.foodie.utils.BaseActivity
 import com.ruitzei.foodie.utils.viewModelProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
+
 class LoginActivity: BaseActivity() {
 
     private var viewModel: LoginViewModel? = null
     private var callbackManager = CallbackManager.Factory.create()
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(com.ruitzei.foodie.R.layout.activity_login)
 
+        auth = FirebaseAuth.getInstance()
+
         viewModel = viewModelProvider()
 
         viewModel?.loginAction?.observe(this, Observer {
+
             val intent = MainActivity.newIntent(context = baseContext)
             startActivity(intent)
         })
 
         login_button.setOnClickListener {
-            viewModel?.performLogin(login_username.text.toString(), login_password.text.toString())
+            firebaseLogin()
         }
 
         fb_login_btn.setOnClickListener {
-//            LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile"))
-            fb_login_btn_secret.performClick()
+            // User might already be logged in, so need to check it.
+            if (isLoggedIn()) {
+                val accessToken = AccessToken.getCurrentAccessToken()
+                handleFacebookAccessToken(accessToken)
+            } else {
+                fb_login_btn_secret.performClick()
+            }
         }
 
         fb_login_btn_secret.setReadPermissions("public_profile", "email")
@@ -44,7 +58,7 @@ class LoginActivity: BaseActivity() {
         fb_login_btn_secret.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 Toast.makeText(baseContext, loginResult.accessToken.token, Toast.LENGTH_SHORT).show()
-                viewModel?.performFBLogin(loginResult.accessToken.token)
+                handleFacebookAccessToken(loginResult.accessToken)
             }
 
             override fun onCancel() {
@@ -56,6 +70,44 @@ class LoginActivity: BaseActivity() {
                 Toast.makeText(baseContext, exception.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    fun isLoggedIn(): Boolean {
+        val accessToken = AccessToken.getCurrentAccessToken()
+        return accessToken != null
+    }
+
+    private fun handleFacebookAccessToken(accesToken: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(accesToken.token)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("Login", "signInWithCredential:success")
+                    viewModel?.performFBLogin(accesToken.token)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("Login", "signInWithCredential:failure", task.exception)
+                }
+            }
+    }
+
+    // Logs in to the application (logging in to firebase before, if it has a facebook access token)
+    private fun firebaseLogin() {
+        val token = AccessToken.getCurrentAccessToken()
+        if (token != null) {
+            val credential = FacebookAuthProvider.getCredential(token.token)
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Login", "signInWithCredential:success")
+                    } else {
+                        Log.w("Login", "signInWithCredential:failure", task.exception)
+                    }
+
+                    viewModel?.performLogin(login_username.text.toString(), login_password.text.toString())
+                }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

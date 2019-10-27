@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,15 +16,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.LatLong
 import com.ruitzei.foodie.model.LocationPermission
+import com.ruitzei.foodie.model.UserData
+import com.ruitzei.foodie.model.UserProperties
 import com.ruitzei.foodie.utils.BaseActivity
 import com.ruitzei.foodie.utils.BaseFragment
 import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.viewModelProvider
 
-class HomeFragment : BaseFragment(), OnMapReadyCallback {
+class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
     val ZOOM_LEVEL = 15.5f
     var mLocationRequest: LocationRequest? = null
@@ -31,6 +36,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     var fused: FusedLocationProviderClient? = null
     var locationCallback: LocationCallback? = null
     private lateinit var homeViewModel: HomeViewModel
+
+    private lateinit var usersReference: DatabaseReference
 
     private var map: GoogleMap? = null
 
@@ -61,7 +68,97 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         }
 
         showMap()
+
+        initializeFirebaseTable()
+
+        createIfNotExists()
+        listenToUserChanges()
     }
+
+    private fun initializeFirebaseTable() {
+        usersReference = FirebaseDatabase.getInstance().reference
+            .child("users")
+    }
+
+    private fun createIfNotExists() {
+        val userId = uid
+
+        usersReference.child(userId).addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Get user value
+                    val user = dataSnapshot.getValue(UserProperties::class.java)
+
+                    // [START_EXCLUDE]
+                    if (user == null) {
+                        // User does not exist
+                        Log.e(TAG, "User $userId is unexpectedly null")
+                        Toast.makeText(context,
+                            "Error: could not fetch user.",
+                            Toast.LENGTH_SHORT).show()
+
+                        createNewUser()
+                    } else {
+                    }
+                    // [END_EXCLUDE]
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w(TAG, "getUser:onCancelled", databaseError.toException())
+                    // [START_EXCLUDE]
+                    // [END_EXCLUDE]
+                }
+            })
+    }
+
+    private fun createNewUser() {
+        // Create new post at /user-posts/$userid/$postid and at
+        // /posts/$postid simultaneously
+        val key = uid
+
+        val user = UserData.user
+        val postValues = user!!.toMap()
+
+        val childUpdates = HashMap<String, Any>()
+        childUpdates["/$key"] = postValues
+
+        usersReference.updateChildren(childUpdates)
+    }
+
+    private fun listenToUserChanges() {
+        usersReference.addValueEventListener(this)
+    }
+
+    override fun onCancelled(databaseError: DatabaseError) {
+        Log.w("Home", "loadPost:onCancelled", databaseError.toException())
+    }
+
+    override fun onDataChange(dataSnapshot: DataSnapshot) {
+        map?.clear()
+
+        for (postSnapshot in dataSnapshot.children) {
+            val userData = postSnapshot.getValue(UserProperties::class.java)
+            map?.addMarker(
+                MarkerOptions().position(
+                    LatLng(
+                        userData?.lat ?: 0.0,
+                        userData?.long ?: 0.0
+                    )
+                )
+                    .title("${userData?.name} ${userData?.lastName}")
+            )
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        usersReference.removeEventListener(this)
+    }
+
+    val uid: String
+        get() = FirebaseAuth.getInstance().currentUser!!.uid
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -95,17 +192,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
                 ZOOM_LEVEL))
     }
 
+    fun postUser() {
+        val uid = uid
+
+    }
+
     override fun onMapReady(map: GoogleMap) {
         this.map = map
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isZoomGesturesEnabled= true
-
-        // Do something with markers
-//        map.setInfoWindowAdapter(CustomInfoWindowAdapter(this))
-//        map.setOnInfoWindowClickListener { marker ->
-//            val store = Gson().fromJson(marker.snippet, Store::class.java)
-//            startActivity(RestaurantDetailActivity.newIntent(this, store))
-//        }
 
         mLocationRequest = LocationRequest()
         mLocationRequest!!.setInterval(120000) // two minute interval

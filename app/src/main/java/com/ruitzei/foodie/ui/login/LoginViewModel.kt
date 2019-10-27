@@ -44,7 +44,8 @@ class LoginViewModel : ViewModel() {
 
         Api.getLoggedInUserData( object : RequestCallbacks<User> {
             override fun onSuccess(response: User) {
-                UserData.user= response
+                UserData.user = response
+
                 loginAction.sendAction(User())
             }
 

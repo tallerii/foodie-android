@@ -11,16 +11,21 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ruitzei.foodie.utils.BaseActivity
 import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : BaseActivity() {
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        auth = FirebaseAuth.getInstance()
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -33,6 +38,13 @@ class MainActivity : BaseActivity() {
         navView.setupWithNavController(navController)
 
         printFirebaseToken()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
     }
 
     private fun printFirebaseToken() {
