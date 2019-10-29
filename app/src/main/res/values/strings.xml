@@ -8,4 +8,55 @@
     <string name="fb_login_protocol_scheme">fb1759590304174672</string>
     <string name="location_text">Necesitamos saber si ubicación para poder mostrarte el mapa.</string>
     <string name="title_activity_maps">Map</string>
+
+    <string-array name="localities">
+        <item>Agronomía</item>
+        <item>Almagro</item>
+        <item>Balvanera</item>
+        <item>Barracas</item>
+        <item>Belgrano</item>
+        <item>Boedo</item>
+        <item>Caballito</item>
+        <item>Chacarita</item>
+        <item>Coghlan</item>
+        <item>Colegiales</item>
+        <item>Constitución</item>
+        <item>Flores</item>
+        <item>Floresta</item>
+        <item>La Boca</item>
+        <item>La Paternal</item>
+        <item>Liniers</item>
+        <item>Mataderos</item>
+        <item>Monte Castro</item>
+        <item>Monserrat (originalmente llamado Montserrat).</item>
+        <item>Nueva Pompeya</item>
+        <item>Núñez</item>
+        <item>Palermo</item>
+        <item>Parque Avellaneda</item>
+        <item>Parque Chacabuco</item>
+        <item>Parque Chas</item>
+        <item>Parque Patricios</item>
+        <item>Puerto Madero</item>
+        <item>Recoleta</item>
+        <item>Retiro</item>
+        <item>Saavedra</item>
+        <item>San Cristóbal</item>
+        <item>San Nicolás</item>
+        <item>San Telmo</item>
+        <item>Vélez Sársfield</item>
+        <item>Versalles</item>
+        <item>Villa Crespo</item>
+        <item>Villa del Parque</item>
+        <item>Villa Devoto</item>
+        <item>Villa General Mitre</item>
+        <item>Villa Lugano</item>
+        <item>Villa Luro</item>
+        <item>Villa Ortúzar</item>
+        <item>Villa Pueyrredón</item>
+        <item>Villa Real</item>
+        <item>Villa Riachuelo</item>
+        <item>Villa Santa Rita</item>
+        <item>Villa Soldati</item>
+        <item>Villa Urquiza</item>
+    </string-array>
 </resources>

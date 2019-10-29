@@ -3,42 +3,56 @@ package com.ruitzei.foodie.ui.order
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import androidx.fragment.app.Fragment
+import com.ruitzei.foodie.R
 import com.ruitzei.foodie.utils.BaseActivity
-import java.util.*
+import com.ruitzei.foodie.utils.viewModelProvider
 
 
 class NewOrderActivity : BaseActivity() {
+    private var viewmodel: OrderViewModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(com.ruitzei.foodie.R.layout.activity_new_order)
+        setContentView(R.layout.activity_new_order)
+        initViewModel()
 
-        // Initialize the AutocompleteSupportFragment.
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(com.ruitzei.foodie.R.id.autocomplete_fragment) as AutocompleteSupportFragment?
+        viewmodel?.orderDetailAction?.sendAction("")
+    }
 
-// Specify the types of place data to return.
-        autocompleteFragment?.setCountry("ARG")
-        autocompleteFragment!!.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG))
+    private fun initViewModel() {
+        viewmodel = viewModelProvider()
 
-
-// Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.name + ", " + place.id)
-            }
-
-            override fun onError(status: Status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: $status")
-            }
+        viewmodel?.addressToAction?.observe(this, androidx.lifecycle.Observer {
+            startFragment(OrderAddressFragment.newInstance(
+                title = "Dirección de Entrega",
+                subtitle = "A donde se va a entregar el producto",
+                addressType = AddressType.TO
+            ))
         })
+
+        viewmodel?.addressFromAction?.observe(this, androidx.lifecycle.Observer {
+            startFragment(OrderAddressFragment.newInstance(
+                title = "Dirección de Pickup",
+                subtitle = "De donde vamos a levantar tu pedido.",
+                addressType = AddressType.TO
+            ))
+
+        })
+        viewmodel?.orderAmountAction?.observe(this, androidx.lifecycle.Observer {
+            startFragment(OrderAmountFragment.newInstance())
+        })
+
+        viewmodel?.orderDetailAction?.observe(this, androidx.lifecycle.Observer {
+            startFragment(OrderDescriptionFragment.newInstance())
+        })
+    }
+
+    private fun startFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.layout_holder, fragment)
+            .commit()
     }
 
     companion object {

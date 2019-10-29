@@ -67,6 +67,10 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     implementation 'com.google.android.libraries.places:places:2.0.0'
+
+    // Coroutines on kotlin -> Async
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.1"
 }
 
 apply plugin: 'com.google.gms.google-services'
