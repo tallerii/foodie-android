@@ -69,8 +69,12 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.0.0'
 
     // Coroutines on kotlin -> Async
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.1"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,6 +1,5 @@
 package com.ruitzei.foodie.ui.order
 
-import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +10,9 @@ import android.widget.AutoCompleteTextView
 import com.google.android.gms.maps.model.LatLng
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.utils.BaseFragment
+import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.activityViewModelProvider
 import kotlinx.android.synthetic.main.fragment_order_address.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import java.io.IOException
 import java.util.*
 
 
@@ -66,11 +62,7 @@ class OrderAddressFragment : BaseFragment() {
 
 
         order_address_btn.setOnClickListener {
-            if (addressType == AddressType.FROM) {
-                viewModel?.addressToAction?.sendAction("")
-            } else {
-                viewModel?.endOrderAction?.sendAction("")
-            }
+            fetchAddress()
         }
     }
 
@@ -78,39 +70,43 @@ class OrderAddressFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel= activityViewModelProvider()
+
+        viewModel?.addressAction?.observe(this, androidx.lifecycle.Observer {
+            Log.d(TAG, "Observer")
+
+            when (it.status) {
+                Resource.Status.LOADING-> {
+
+                }
+                Resource.Status.SUCCESS -> {
+                    val address = getGoogleMapsAddress()
+
+                    if (addressType == AddressType.FROM) {
+                        viewModel?.setAddressFrom(
+                            it.data!!
+                        )
+                        viewModel?.addressToAction?.sendAction("")
+                    } else {
+                        viewModel?.setAddressTo(
+                            it.data!!
+                        )
+                        viewModel?.endOrderAction?.sendAction("")
+                    }
+                }
+                Resource.Status.ERROR -> {
+
+                }
+            }
+        })
+    }
+
+    private fun fetchAddress() {
+        viewModel?.getLocationFromAddress(getGoogleMapsAddress())
     }
 
     fun getGoogleMapsAddress(): String {
         Log.d(TAG, "${address_address.text}, ${address_localities.text}, Ciudad Autónoma de Buenos Aires")
         return "${address_address.text}, ${address_localities.text}, Ciudad Autónoma de Buenos Aires"
-    }
-
-    private fun getGoogleMapsCoordinates() = async(UI) {
-        val job = async(CommonPool) {
-            latLng = getLocationFromAddress((getGoogleMapsAddress()))
-        }
-    }
-
-    fun getLocationFromAddress(strAddress: String): LatLng? {
-        val coder = Geocoder(context!!)
-        val address: List<android.location.Address>?
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5)
-            if (address == null) {
-                return null
-            }
-            val location = address[0]
-
-            latLng = LatLng(location.latitude, location.longitude)
-
-        } catch (ex: IOException) {
-
-            ex.printStackTrace()
-        }
-
-        return latLng
     }
 
     internal inner class Validator : AutoCompleteTextView.Validator {

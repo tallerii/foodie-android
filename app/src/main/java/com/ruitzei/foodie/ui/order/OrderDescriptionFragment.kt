@@ -30,8 +30,14 @@ class OrderDescriptionFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         order_btn.setOnClickListener {
+            updateData()
             viewModel?.orderAmountAction?.sendAction("")
         }
+    }
+
+    fun updateData() {
+        val description = order_input.text.toString()
+        viewModel?.setDescription(description)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

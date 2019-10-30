@@ -31,8 +31,14 @@ class OrderAmountFragment : BaseFragment() {
 
 
         order_price_btn.setOnClickListener {
+            updateData()
             viewModel?.addressFromAction?.sendAction("")
         }
+    }
+
+    fun updateData() {
+        val amount = order_price.text.toString()
+        viewModel?.setAmount(amount)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

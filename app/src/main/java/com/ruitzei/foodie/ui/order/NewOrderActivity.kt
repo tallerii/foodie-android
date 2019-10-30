@@ -36,7 +36,7 @@ class NewOrderActivity : BaseActivity() {
             startFragment(OrderAddressFragment.newInstance(
                 title = "Dirección de Pickup",
                 subtitle = "De donde vamos a levantar tu pedido.",
-                addressType = AddressType.TO
+                addressType = AddressType.FROM
             ))
 
         })
