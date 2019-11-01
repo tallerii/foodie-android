@@ -2,6 +2,7 @@ package com.ruitzei.foodie.service
 
 import com.ruitzei.foodie.application.FoodieApplication
 import com.ruitzei.foodie.model.*
+import java.net.HttpURLConnection.HTTP_CREATED
 import java.net.HttpURLConnection.HTTP_OK
 
 /**
@@ -67,5 +68,23 @@ object Api {
         }
 
         request.enqueue(apiCalls!!.updateUserData(UserDataUpdatePostData(name, phoneNumber, mail)), listener)
+    }
+
+    fun createOrder(order: OrderPostObject, listener: RequestCallbacks<Order>) {
+        val request = object: AbstractRequest<Order>() {
+            override val successCode: Int
+                get() = HTTP_CREATED
+        }
+
+        request.enqueue(apiCalls!!.createOrder(order), listener)
+    }
+
+    fun getOrders(listener: RequestCallbacks<List<Order>>) {
+        val request = object: AbstractRequest<List<Order>>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.getOrders(), listener)
     }
 }

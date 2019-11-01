@@ -9,6 +9,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.ruitzei.foodie.application.FoodieApplication
 import com.ruitzei.foodie.model.Address
 import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderPostObject
+import com.ruitzei.foodie.service.Api
+import com.ruitzei.foodie.service.RequestCallbacks
 import com.ruitzei.foodie.utils.ActionLiveData
 import com.ruitzei.foodie.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +27,13 @@ class OrderViewModel: ViewModel() {
 
     val addressAction: ActionLiveData<Resource<Address>> = ActionLiveData()
 
-    val endOrderAction: ActionLiveData<String> = ActionLiveData()
+    val endOrderAction: ActionLiveData<OrderPostObject> = ActionLiveData()
+    val createOrderAction: ActionLiveData<Resource<Order>> = ActionLiveData()
 
-    val order: MutableLiveData<Order> = MutableLiveData()
+    val order: MutableLiveData<OrderPostObject> = MutableLiveData()
 
     init {
-        order.value = Order()
+        order.value = OrderPostObject()
     }
 
     fun setDescription(description: String) {
@@ -46,6 +50,26 @@ class OrderViewModel: ViewModel() {
 
     fun setAddressTo(addressTo: Address) {
         order.value?.addressTo = addressTo
+    }
+
+    fun endOrder() {
+        order.value?.let {
+            endOrderAction.sendAction(it)
+        }
+    }
+
+    fun createOrder(order: OrderPostObject) {
+        createOrderAction.sendAction(Resource.loading())
+
+        Api.createOrder(order, object : RequestCallbacks<Order> {
+            override fun onSuccess(response: Order) {
+                createOrderAction.sendAction(Resource.success(response))
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                createOrderAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
     }
 
     fun getLocationFromAddress(strAddress: String) {
@@ -67,10 +91,12 @@ class OrderViewModel: ViewModel() {
                 viewModelScope.launch(Dispatchers.Main) {
                     addressAction.sendAction(
                         Resource.success(
+//                            Address(
+//                                address = strAddress,
+//                                point = latLng.toPoint()
+//                            )
                             Address(
-                                strAddress,
-                                latLng.latitude,
-                                latLng.longitude
+                                 coordinates = listOf(latLng.latitude, latLng.longitude)
                             )
                         )
                     )

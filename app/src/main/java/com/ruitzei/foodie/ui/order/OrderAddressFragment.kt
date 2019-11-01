@@ -90,7 +90,7 @@ class OrderAddressFragment : BaseFragment() {
                         viewModel?.setAddressTo(
                             it.data!!
                         )
-                        viewModel?.endOrderAction?.sendAction("")
+                        viewModel?.endOrder()
                     }
                 }
                 Resource.Status.ERROR -> {
