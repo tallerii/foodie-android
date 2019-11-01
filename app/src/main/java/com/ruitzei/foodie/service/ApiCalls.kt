@@ -36,4 +36,10 @@ interface ApiCalls {
 
     @PATCH("clients/self/")
     fun updateUserData(@Body userDataUpdatePostData: UserDataUpdatePostData): Call<User>
+
+    @POST("orders/")
+    fun createOrder(@Body order: OrderPostObject): Call<Order>
+
+    @GET("orders/")
+    fun getOrders(): Call<List<Order>>
 }
