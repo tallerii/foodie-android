@@ -39,8 +39,8 @@ class ProfileFragment : BaseFragment() {
         profile_name.setText(user?.name)
         profile_phone.setText(user?.phoneNumber)
         profile_email.setText(user?.mail)
-//        profile_rol.setText(user?.rol)
-        profile_subscription.setText(user?.isDelivery.toString())
+        profile_rol.setText(if (user?.isDelivery == true) "Delivery" else "Usuario")
+//        profile_subscription.setText(user?.isDelivery.toString())
         profile_balance.setText(user?.balance.toString())
 
         profile_avatar.loadImage(user?.avatar?: "")
