@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.ChatMessage
+import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.utils.BaseActivity
 
 
@@ -80,7 +81,7 @@ class ChatActivity : BaseActivity() {
         orderId = intent!!.extras!!.getString(ORDER_ID).orEmpty()
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().reference.child("chats")
 
-        val parser = SnapshotParser<ChatMessage> { dataSnapshot ->
+        val parser = SnapshotParser { dataSnapshot ->
                 val friendlyMessage =
                     dataSnapshot.getValue<ChatMessage>(ChatMessage::class.java)
                 if (friendlyMessage != null) {
@@ -113,13 +114,14 @@ class ChatActivity : BaseActivity() {
                     friendlyMessage: ChatMessage
                 ) {
                     mProgressBar!!.visibility = ProgressBar.INVISIBLE
+
                     if (friendlyMessage.message.isNotEmpty()) {
-                        viewHolder.messageTextView.text = friendlyMessage.message
+                        viewHolder.messengerTextView.text = friendlyMessage.message
                         viewHolder.messageTextView.visibility = TextView.VISIBLE
                         viewHolder.messageImageView.visibility = ImageView.GONE
                     }
 
-                    viewHolder.messengerTextView.text = friendlyMessage.senderId
+                    viewHolder.messageTextView.text = friendlyMessage.senderName
                 }
             }
 
@@ -155,18 +157,13 @@ class ChatActivity : BaseActivity() {
         mSendButton!!.setOnClickListener {
             val friendlyMessage = ChatMessage(
                 mMessageEditText!!.text.toString(),
-                mFirebaseUser?.uid.orEmpty()
+                UserData.user?.id.orEmpty(),
+                UserData.user?.fullName.orEmpty()
             )
             mFirebaseDatabaseReference!!.child(orderId)
                 .push().setValue(friendlyMessage)
             mMessageEditText!!.setText("")
         }
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in.
-        // TODO: Add code to check if user is signed in.
     }
 
     public override fun onPause() {

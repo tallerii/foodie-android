@@ -39,6 +39,9 @@ class User(
     val latLong: LatLong
         get() = LatLong(geometry!!.coordinates.first(), geometry!!.coordinates.last())
 
+    val fullName: String
+        get() = "$name $lastName"
+
     companion object {
         fun mockedUser(): User {
             return User(

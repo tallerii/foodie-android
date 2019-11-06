@@ -22,6 +22,7 @@ import com.ruitzei.foodie.model.LatLong
 import com.ruitzei.foodie.model.LocationPermission
 import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.model.UserProperties
+import com.ruitzei.foodie.ui.chat.ChatActivity
 import com.ruitzei.foodie.ui.order.OrderViewModel
 import com.ruitzei.foodie.utils.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -188,9 +189,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success active orders")
-                    it.data?.firstOrNull()?.properties?.deliveryUser?.let {
+                    it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
                         Log.d(TAG, "Have ID on first order $it")
-                        showActiveOrderLayout(it.id)
+                        showActiveOrderLayout(delivery.id, it.data.first().id)
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -241,7 +242,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             Looper.myLooper())
     }
 
-    private fun showActiveOrderLayout(deliveryId: String) {
+    private fun showActiveOrderLayout(deliveryId: String, orderId: String) {
         active_order_layout.visibility = View.VISIBLE
 
         if (UserData.user?.isDelivery == true) {
@@ -251,6 +252,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             }
         } else {
             listenToDeliveryUpdates(deliveryId)
+        }
+
+        active_order_layout.setOnClickListener {
+            startActivity(ChatActivity.newIntent(context!!, orderId))
         }
     }
 
