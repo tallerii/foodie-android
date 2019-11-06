@@ -1,4 +1,4 @@
-package com.ruitzei.foodie.ui.dashboard
+package com.ruitzei.foodie.ui.pastOrders
 
 import android.view.LayoutInflater
 import android.view.View

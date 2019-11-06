@@ -1,4 +1,4 @@
-package com.ruitzei.foodie.ui.dashboard
+package com.ruitzei.foodie.ui.pastOrders
 
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.Order
-import com.ruitzei.foodie.ui.home.HomeFragment
+import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.ui.order.OrderViewModel
 import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.activityViewModelProvider
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 
-class DashboardFragment : Fragment() {
+class OrdersListFragment : Fragment() {
 
     private lateinit var orderViewModel: OrderViewModel
 
@@ -33,27 +33,41 @@ class DashboardFragment : Fragment() {
 
         orderViewModel = activityViewModelProvider()
 
-        orderViewModel.activeOrdersAction.observe(this, Observer {
+        orderViewModel.unassignedOrdersAction.observe(this, Observer {
             when (it.status) {
                 Resource.Status.LOADING -> {
-                    Log.d(HomeFragment.TAG, "Loading")
+                    Log.d(TAG, "Loading")
                 }
                 Resource.Status.SUCCESS -> {
-                    Log.d(HomeFragment.TAG, "Success")
+                    Log.d(TAG, "Success")
                     showAdapter(it.data.orEmpty())
                 }
                 Resource.Status.ERROR -> {
-                    Log.d(HomeFragment.TAG, "Error")
+                    Log.d(TAG, "Error")
                 }
             }
         })
 
-        orderViewModel.getActiveOrders()
+        orderViewModel.claimOrderAction.observe(this, Observer {
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    Log.d(TAG, "claiming order")
+                }
+                Resource.Status.SUCCESS -> {
+                    Log.d(TAG, "Success claiming order")
+                }
+                Resource.Status.ERROR -> {
+                    Log.d(TAG, "error claiming order")
+                }
+            }
+        })
+
+        orderViewModel.getUnassignedOrders()
     }
 
     fun showAdapter(orders: List<Order>) {
         val adapter = OrdersAdapter(orders) {
-            Log.d(TAG, "Order selected ${it.properties?.notes}")
+            handleOrderClick(it)
         }
 
         orders_recycler.apply {
@@ -62,11 +76,17 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    companion object {
-        val TAG: String = DashboardFragment::class.java.simpleName
+    fun handleOrderClick(order: Order) {
+        if (UserData?.user?.isDelivery == true) {
+            orderViewModel.claimOrder()
+        }
+    }
 
-        fun newInstance(): DashboardFragment {
-            return DashboardFragment().apply {
+    companion object {
+        val TAG: String = OrdersListFragment::class.java.simpleName
+
+        fun newInstance(): OrdersListFragment {
+            return OrdersListFragment().apply {
                 arguments = Bundle().apply {
 
                 }

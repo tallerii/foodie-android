@@ -50,5 +50,5 @@ interface ApiCalls {
     fun getUnassignedOrders(): Call<OrderPage>
 
     @PATCH("orders/unassigned/{id}/")
-    fun takeOrder(@Path("delivery_user") userId: String): Call<Order>
+    fun claimOrder(@Path("delivery_user") userId: String): Call<Order>
 }

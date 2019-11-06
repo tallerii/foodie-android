@@ -34,6 +34,7 @@ class OrderViewModel: ViewModel() {
     val order: MutableLiveData<OrderPostObject> = MutableLiveData()
 
     val ordersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
+    val claimOrderAction: ActionLiveData<Resource<Order>> = ActionLiveData()
     val activeOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
     val unassignedOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
 
@@ -61,6 +62,20 @@ class OrderViewModel: ViewModel() {
         order.value?.let {
             endOrderAction.sendAction(it)
         }
+    }
+
+    fun claimOrder() {
+        claimOrderAction.sendAction(Resource.loading())
+
+        Api.claimOrder(object : RequestCallbacks<Order> {
+            override fun onSuccess(response: Order) {
+                claimOrderAction.sendAction(Resource.success(response))
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                claimOrderAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
     }
 
     fun getOrders() {

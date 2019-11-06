@@ -108,4 +108,14 @@ object Api {
 
         request.enqueue(apiCalls!!.getUnassignedOrders(), listener)
     }
+
+    fun claimOrder(listener: RequestCallbacks<Order>) {
+        val request = object: AbstractRequest<Order>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        val userId = UserData.user?.id
+        request.enqueue(apiCalls!!.claimOrder(userId!!), listener)
+    }
 }
