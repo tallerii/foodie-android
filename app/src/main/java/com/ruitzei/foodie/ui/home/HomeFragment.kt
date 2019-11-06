@@ -190,7 +190,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     Log.d(TAG, "Success active orders")
                     it.data?.firstOrNull()?.properties?.deliveryUser?.let {
                         Log.d(TAG, "Have ID on first order $it")
-                        showActiveOrderLayout(it)
+                        showActiveOrderLayout(it.id)
                     }
                 }
                 Resource.Status.ERROR -> {
