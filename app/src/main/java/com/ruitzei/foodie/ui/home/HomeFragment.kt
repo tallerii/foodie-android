@@ -270,7 +270,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
                 val latLong = p0.getValue(LatLong::class.java)
 
-                val deliveryPosition = LatLng(latLong!!.lat, latLong.lon)
+                val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
                 map?.clear()
                 map?.addMarker(
                     MarkerOptions().position(deliveryPosition)

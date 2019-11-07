@@ -64,10 +64,10 @@ class OrderViewModel: ViewModel() {
         }
     }
 
-    fun claimOrder() {
+    fun claimOrder(order: Order) {
         claimOrderAction.sendAction(Resource.loading())
 
-        Api.claimOrder(object : RequestCallbacks<Order> {
+        Api.claimOrder(order.id, object : RequestCallbacks<Order> {
             override fun onSuccess(response: Order) {
                 claimOrderAction.sendAction(Resource.success(response))
             }

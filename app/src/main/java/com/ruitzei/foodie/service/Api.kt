@@ -88,7 +88,7 @@ object Api {
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.getOrders(), listener)
+        request.enqueue(apiCalls!!.getOrders("delivered"), listener)
     }
 
     fun getActiveOrders(listener: RequestCallbacks<OrderPage>) {
@@ -97,7 +97,7 @@ object Api {
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.getActiveOrders(), listener)
+        request.enqueue(apiCalls!!.getOrders("in_progress"), listener)
     }
 
     fun getUnassignedOrders(listener: RequestCallbacks<OrderPage>) {
@@ -106,16 +106,16 @@ object Api {
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.getUnassignedOrders(), listener)
+        request.enqueue(apiCalls!!.getOrders("unassigned"), listener)
     }
 
-    fun claimOrder(listener: RequestCallbacks<Order>) {
+    fun claimOrder(orderId: String, listener: RequestCallbacks<Order>) {
         val request = object: AbstractRequest<Order>() {
             override val successCode: Int
                 get() = HTTP_OK
         }
 
         val userId = UserData.user?.id
-        request.enqueue(apiCalls!!.claimOrder(userId!!), listener)
+        request.enqueue(apiCalls!!.claimOrder(orderId, PatchOrderWithUserData(userId!!)), listener)
     }
 }

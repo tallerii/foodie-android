@@ -51,7 +51,7 @@ class User(
                     phoneNumber = "+5491165303000",
                     mail = "sarlagna@gmail.com",
                     isDelivery = false,
-                    balance = 1256,
+                    balance = 1256.0,
                     avatar = "https://previews.123rf.com/images/fayethequeen/fayethequeen1702/fayethequeen170200011/70740120-cara-del-monstruo-criaturas-de-dibujos-animados-vector-de-ilustraci%C3%B3n-stock-avatar.jpg"
                 )
             )
@@ -66,6 +66,6 @@ data class UserProperties (
     @SerializedName("email") var mail: String = "",
     @SerializedName("phone_number") var phoneNumber: String = "",
     @SerializedName("is_delivery") var isDelivery: Boolean = false,
-    @SerializedName("balance") var balance: Int = 0,
+    @SerializedName("balance") var balance: Double = 0.0,
     @SerializedName("avatar") var avatar: String = ""
 )

@@ -78,7 +78,7 @@ class OrdersListFragment : Fragment() {
 
     fun handleOrderClick(order: Order) {
         if (UserData?.user?.isDelivery == true) {
-            orderViewModel.claimOrder()
+            orderViewModel.claimOrder(order)
         }
     }
 
