@@ -18,15 +18,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.LatLong
 import com.ruitzei.foodie.model.LocationPermission
 import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.model.UserProperties
-import com.ruitzei.foodie.utils.BaseActivity
-import com.ruitzei.foodie.utils.BaseFragment
-import com.ruitzei.foodie.utils.Resource
-import com.ruitzei.foodie.utils.viewModelProvider
+import com.ruitzei.foodie.ui.chat.ChatActivity
+import com.ruitzei.foodie.ui.order.OrderViewModel
+import com.ruitzei.foodie.utils.*
+import kotlinx.android.synthetic.main.fragment_home.*
+
 
 class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
@@ -35,8 +35,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
     var fused: FusedLocationProviderClient? = null
     var locationCallback: LocationCallback? = null
-    private lateinit var homeViewModel: HomeViewModel
 
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var orderViewModel: OrderViewModel
     private lateinit var usersReference: DatabaseReference
 
     private var map: GoogleMap? = null
@@ -46,7 +47,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(com.ruitzei.foodie.R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,6 +64,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     // TODO: DO SOMETHING WITH LOCATION
 
                     showMyLocation(location)
+                    homeViewModel.updateLatLong(LatLong(location.latitude, location.longitude))
                 }
             }
         }
@@ -134,20 +136,20 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
     }
 
     override fun onDataChange(dataSnapshot: DataSnapshot) {
-        map?.clear()
+//        map?.clear()
 
-        for (postSnapshot in dataSnapshot.children) {
-            val userData = postSnapshot.getValue(UserProperties::class.java)
-            map?.addMarker(
-                MarkerOptions().position(
-                    LatLng(
-                        userData?.lat ?: 0.0,
-                        userData?.long ?: 0.0
-                    )
-                )
-                    .title("${userData?.name} ${userData?.lastName}")
-            )
-        }
+//        for (postSnapshot in dataSnapshot.children) {
+//            val userData = postSnapshot.getValue(UserProperties::class.java)
+//            map?.addMarker(
+//                MarkerOptions().position(
+//                    LatLng(
+//                        userData?.lat?: 0.0,
+//                        userData?.long ?: 0.0
+//                    )
+//                )
+//                    .title("${userData?.name} ${userData?.lastName}")
+//            )
+//        }
     }
 
     override fun onDestroy() {
@@ -164,6 +166,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         super.onActivityCreated(savedInstanceState)
 
         homeViewModel = viewModelProvider()
+        orderViewModel = activityViewModelProvider()
 
         homeViewModel.updateLatLongAction.observe(this, Observer {
             when (it.status) {
@@ -179,7 +182,25 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             }
         })
 
-        homeViewModel.updateLatLong(LatLong(2.0, 2.5))
+        orderViewModel.activeOrdersAction.observe(this, Observer {
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    Log.d(TAG, "Loading active orders")
+                }
+                Resource.Status.SUCCESS -> {
+                    Log.d(TAG, "Success active orders")
+                    it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
+                        Log.d(TAG, "Have ID on first order $it")
+                        showActiveOrderLayout(delivery.id, it.data.first().id)
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Log.d(TAG, "Error Active orders")
+                }
+            }
+        })
+
+        orderViewModel.getActiveOrders()
     }
 
     fun showMyLocation(location: Location) {
@@ -206,17 +227,12 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         mLocationRequest!!.setInterval(120000) // two minute interval
         mLocationRequest!!.setFastestInterval(120000)
         mLocationRequest!!.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-
-        if (activity is BaseActivity) {
-            Log.d(TAG, "IS base activity")
-            (activity as BaseActivity).performPermissionAction(startLocationUpdates, LocationPermission())
-        }
     }
 
     fun showMap() {
         val map = SupportMapFragment.newInstance()
         map?.getMapAsync(this)
-        childFragmentManager.beginTransaction().replace(R.id.map_holder, map).commit()
+        childFragmentManager.beginTransaction().replace(com.ruitzei.foodie.R.id.map_holder, map).commit()
     }
 
     @SuppressWarnings("MissingPermission")
@@ -226,6 +242,44 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             Looper.myLooper())
     }
 
+    private fun showActiveOrderLayout(deliveryId: String, orderId: String) {
+        active_order_layout.visibility = View.VISIBLE
+
+        if (UserData.user?.isDelivery == true) {
+            if (activity is BaseActivity) {
+                Log.d(TAG, "IS base activity")
+                (activity as BaseActivity).performPermissionAction(startLocationUpdates, LocationPermission())
+            }
+        } else {
+            listenToDeliveryUpdates(deliveryId)
+        }
+
+        active_order_layout.setOnClickListener {
+            startActivity(ChatActivity.newIntent(context!!, orderId))
+        }
+    }
+
+    private fun listenToDeliveryUpdates(deliveryId: String) {
+        usersReference.child(deliveryId).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Listening to order got cancelled")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                Log.d(TAG, "Successfully listened to order change")
+
+                val latLong = p0.getValue(LatLong::class.java)
+
+                val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
+                map?.clear()
+                map?.addMarker(
+                    MarkerOptions().position(deliveryPosition)
+                        .title("Delivery")
+                )
+                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(deliveryPosition, ZOOM_LEVEL))
+            }
+        })
+    }
 
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName

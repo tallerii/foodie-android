@@ -58,7 +58,10 @@ object Api {
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.updateLatLong(latLong), listener)
+        val address = Address(
+            coordinates = listOf(latLong.lat, latLong.lon)
+        )
+        request.enqueue(apiCalls!!.updateLatLong(UpdateLocationModel(address)), listener)
     }
 
     fun updateUserData(name: String, phoneNumber: String, mail: String, listener: RequestCallbacks<User>) {
@@ -79,12 +82,40 @@ object Api {
         request.enqueue(apiCalls!!.createOrder(order), listener)
     }
 
-    fun getOrders(listener: RequestCallbacks<List<Order>>) {
-        val request = object: AbstractRequest<List<Order>>() {
+    fun getOrders(listener: RequestCallbacks<OrderPage>) {
+        val request = object: AbstractRequest<OrderPage>() {
             override val successCode: Int
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.getOrders(), listener)
+        request.enqueue(apiCalls!!.getOrders("delivered"), listener)
+    }
+
+    fun getActiveOrders(listener: RequestCallbacks<OrderPage>) {
+        val request = object: AbstractRequest<OrderPage>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.getOrders("in_progress"), listener)
+    }
+
+    fun getUnassignedOrders(listener: RequestCallbacks<OrderPage>) {
+        val request = object: AbstractRequest<OrderPage>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        request.enqueue(apiCalls!!.getOrders("unassigned"), listener)
+    }
+
+    fun claimOrder(orderId: String, listener: RequestCallbacks<Order>) {
+        val request = object: AbstractRequest<Order>() {
+            override val successCode: Int
+                get() = HTTP_OK
+        }
+
+        val userId = UserData.user?.id
+        request.enqueue(apiCalls!!.claimOrder(orderId, PatchOrderWithUserData(userId!!)), listener)
     }
 }
