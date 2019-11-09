@@ -42,4 +42,19 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="BottomSheetTitle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="AtmBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AtmBottomSheetWrapper</item>
+        <item name="android:titleTextAppearance">@style/BottomSheetTitle</item>
+    </style>
+
+    <style name="AtmBottomSheetWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">224dp</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>
