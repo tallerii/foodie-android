@@ -43,6 +43,7 @@ class MainActivity : BaseActivity() {
 
         fab.setOnClickListener {
             startActivity(NewOrderActivity.newIntent(this))
+//            startActivity(ChatActivity.newIntent(this, "1"))
         }
     }
 

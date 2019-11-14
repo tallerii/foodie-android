@@ -59,6 +59,7 @@ class NewOrderActivity : BaseActivity() {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(HomeFragment.TAG, "Success")
+                    finish()
                 }
                 Resource.Status.ERROR -> {
                     Log.d(HomeFragment.TAG, "Error")

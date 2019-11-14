@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.ruitzei.foodie.application.FoodieApplication
 import com.ruitzei.foodie.model.Address
 import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderPage
 import com.ruitzei.foodie.model.OrderPostObject
 import com.ruitzei.foodie.service.Api
 import com.ruitzei.foodie.service.RequestCallbacks
@@ -31,6 +32,11 @@ class OrderViewModel: ViewModel() {
     val createOrderAction: ActionLiveData<Resource<Order>> = ActionLiveData()
 
     val order: MutableLiveData<OrderPostObject> = MutableLiveData()
+
+    val ordersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
+    val claimOrderAction: ActionLiveData<Resource<Order>> = ActionLiveData()
+    val activeOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
+    val unassignedOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
 
     init {
         order.value = OrderPostObject()
@@ -56,6 +62,63 @@ class OrderViewModel: ViewModel() {
         order.value?.let {
             endOrderAction.sendAction(it)
         }
+    }
+
+    fun claimOrder(order: Order) {
+        claimOrderAction.sendAction(Resource.loading())
+
+        Api.claimOrder(order.id, object : RequestCallbacks<Order> {
+            override fun onSuccess(response: Order) {
+                claimOrderAction.sendAction(Resource.success(response))
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                claimOrderAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
+    }
+
+    fun getOrders() {
+        ordersAction.sendAction(Resource.loading(null))
+
+        Api.getOrders(object : RequestCallbacks<OrderPage> {
+            override fun onSuccess(response: OrderPage) {
+                ordersAction.sendAction(Resource.success(response.getOrders()))
+
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                ordersAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
+    }
+
+    fun getActiveOrders() {
+        activeOrdersAction.sendAction(Resource.loading(null))
+
+        Api.getActiveOrders(object : RequestCallbacks<OrderPage> {
+            override fun onSuccess(response: OrderPage) {
+                activeOrdersAction.sendAction(Resource.success(response.getOrders()))
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                activeOrdersAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
+    }
+
+    fun getUnassignedOrders() {
+        unassignedOrdersAction.sendAction(Resource.loading(null))
+
+        Api.getUnassignedOrders(object : RequestCallbacks<OrderPage> {
+            override fun onSuccess(response: OrderPage) {
+                unassignedOrdersAction.sendAction(Resource.success(response.getOrders()))
+            }
+
+            override fun onFailure(error: String?, code: Int, t: Throwable) {
+                unassignedOrdersAction.sendAction(Resource.error(listOf(), null))
+            }
+        })
     }
 
     fun createOrder(order: OrderPostObject) {

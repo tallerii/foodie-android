@@ -33,7 +33,8 @@ class OrderProperties (
     @SerializedName("start_location") var startLocation: Address? = null,
     @SerializedName("end_location") var endLocation: Address? = null,
     @SerializedName("delivered") var delivered: Boolean = false,
-    @SerializedName("delivery_user") var deliveryUser: String = ""
+    @SerializedName("delivery_user") var deliveryUser: User? = null,
+    @SerializedName("client_user") var clientUser: User? = null
 )
 
 class OrderPostObject (

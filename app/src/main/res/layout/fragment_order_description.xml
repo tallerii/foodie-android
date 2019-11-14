@@ -44,7 +44,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/order_input"
-            android:lines="8"
+            android:lines="2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Introduce una descripción"/>

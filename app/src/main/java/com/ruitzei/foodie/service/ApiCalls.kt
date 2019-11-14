@@ -32,14 +32,31 @@ interface ApiCalls {
     fun getLoggedInUserData(): Call<User>
 
     @PATCH("clients/self")
-    fun updateLatLong(@Body latLong: LatLong): Call<User>
+    fun updateLatLong(@Body updateLocationModel: UpdateLocationModel): Call<User>
 
     @PATCH("clients/self")
     fun updateUserData(@Body userDataUpdatePostData: UserDataUpdatePostData): Call<User>
 
+
+    /*
+        Orders
+     */
     @POST("orders")
     fun createOrder(@Body order: OrderPostObject): Call<Order>
 
+
+    // unassigned, in_progress, delivered o deliver_error
     @GET("orders")
-    fun getOrders(): Call<List<Order>>
+    fun getOrders(@Query("status") status: String): Call<OrderPage>
+
+    /*
+    @GET("orders/active/")
+    fun getActiveOrders(): Call<OrderPage>
+
+    @GET("orders/unassigned/")
+    fun getUnassignedOrders(): Call<OrderPage>
+     */
+
+    @PUT("orders/{id}")
+    fun claimOrder(@Path("id") orderId: String): Call<Order>
 }

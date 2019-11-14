@@ -9,4 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
+
+    <include
+        android:id="@+id/active_order_layout"
+        android:visibility="gone"
+        layout="@layout/layout_order_active">
+    </include>
 </androidx.constraintlayout.widget.ConstraintLayout>
