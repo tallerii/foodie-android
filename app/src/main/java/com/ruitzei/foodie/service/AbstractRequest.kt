@@ -40,8 +40,9 @@ abstract class AbstractRequest<T> {
                     val responseObject = response.body()
 
                     performExtraTask(responseObject)
-                    Log.d(TAG, responseObject!!.toString())
-                    listener.onSuccess(responseObject)
+                    Log.d(TAG, responseObject?.toString())
+
+                    listener.onSuccess(responseObject!!)
 
                     // some error handling
                 } else {

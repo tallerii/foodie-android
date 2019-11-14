@@ -1,6 +1,7 @@
 package com.ruitzei.foodie.service
 
 import com.ruitzei.foodie.model.*
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -58,5 +59,5 @@ interface ApiCalls {
      */
 
     @PUT("orders/{id}")
-    fun claimOrder(@Path("id") orderId: String): Call<Order>
+    fun claimOrder(@Path("id") orderId: String): Call<ResponseBody>
 }

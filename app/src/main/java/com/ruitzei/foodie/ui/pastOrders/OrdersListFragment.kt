@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,9 +56,11 @@ class OrdersListFragment : Fragment() {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success claiming order")
+                    Toast.makeText(context, "Pedido asignado", Toast.LENGTH_SHORT).show()
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "error claiming order")
+                    Toast.makeText(context, "Error asignando pedido", Toast.LENGTH_SHORT).show()
                 }
             }
         })

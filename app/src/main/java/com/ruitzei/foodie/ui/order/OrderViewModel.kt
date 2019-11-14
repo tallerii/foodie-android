@@ -17,6 +17,7 @@ import com.ruitzei.foodie.utils.ActionLiveData
 import com.ruitzei.foodie.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import java.io.IOException
 
 class OrderViewModel: ViewModel() {
@@ -34,7 +35,7 @@ class OrderViewModel: ViewModel() {
     val order: MutableLiveData<OrderPostObject> = MutableLiveData()
 
     val ordersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
-    val claimOrderAction: ActionLiveData<Resource<Order>> = ActionLiveData()
+    val claimOrderAction: ActionLiveData<Resource<ResponseBody>> = ActionLiveData()
     val activeOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
     val unassignedOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
 
@@ -67,8 +68,8 @@ class OrderViewModel: ViewModel() {
     fun claimOrder(order: Order) {
         claimOrderAction.sendAction(Resource.loading())
 
-        Api.claimOrder(order.id, object : RequestCallbacks<Order> {
-            override fun onSuccess(response: Order) {
+        Api.claimOrder(order.id, object : RequestCallbacks<ResponseBody> {
+            override fun onSuccess(response: ResponseBody) {
                 claimOrderAction.sendAction(Resource.success(response))
             }
 
