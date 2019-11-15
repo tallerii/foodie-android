@@ -26,13 +26,13 @@ object Api {
         request.enqueue(apiCalls!!.login(LoginPostData( username, password)), listener)
     }
 
-    fun performFacebookLogin(fbToken: String, listener: RequestCallbacks<LoginResponse>) {
+    fun performFacebookLogin(fbToken: String, fcmToken: String, listener: RequestCallbacks<LoginResponse>) {
         val request = object: AbstractRequest<LoginResponse>() {
             override val successCode: Int
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.loginWithFacebook(FacebookLoginPostData(fbToken)), listener)
+        request.enqueue(apiCalls!!.loginWithFacebook(FacebookLoginPostData(fbToken, fcmToken)), listener)
     }
 
     fun getUserData(userId: String, listener: RequestCallbacks<User>) {

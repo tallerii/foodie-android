@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
+import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.ui.order.NewOrderActivity
 import com.ruitzei.foodie.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -39,19 +41,15 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        printFirebaseToken()
-
-        fab.setOnClickListener {
-            startActivity(NewOrderActivity.newIntent(this))
-//            startActivity(ChatActivity.newIntent(this, "1"))
+        if (UserData.user?.isDelivery == true) {
+            fab.visibility = View.GONE
+        } else {
+            fab.setOnClickListener {
+                startActivity(NewOrderActivity.newIntent(this))
+            }
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
+        printFirebaseToken()
     }
 
     private fun printFirebaseToken() {

@@ -26,8 +26,8 @@ class LoginViewModel : ViewModel() {
         })
     }
 
-    fun performFBLogin(token: String) {
-        Api.performFacebookLogin(token, object : RequestCallbacks<LoginResponse> {
+    fun performFBLogin(token: String, fcmToken: String) {
+        Api.performFacebookLogin(token, fcmToken, object : RequestCallbacks<LoginResponse> {
             override fun onSuccess(response: LoginResponse) {
                 loginWithAppToken(response.token)
             }
