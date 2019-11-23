@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.Order
 import com.ruitzei.foodie.model.UserData
+import com.ruitzei.foodie.ui.bottomsheet.OrderDetailBottomSheet
 import com.ruitzei.foodie.ui.order.OrderViewModel
 import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.activityViewModelProvider
@@ -85,7 +86,7 @@ class OrdersListFragment : Fragment() {
 
     fun handleOrderClick(order: Order) {
         if (UserData?.user?.isDelivery == true) {
-            orderViewModel.claimOrder(order)
+            OrderDetailBottomSheet.newInstance(order, true, true).show(childFragmentManager, "")
         }
     }
 

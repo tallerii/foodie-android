@@ -10,7 +10,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -48,7 +51,6 @@ class ChatActivity : BaseActivity() {
     private var mSendButton: Button? = null
     private var mMessageRecyclerView: RecyclerView? = null
     private var mLinearLayoutManager: LinearLayoutManager? = null
-    private var mProgressBar: ProgressBar? = null
     private var mMessageEditText: EditText? = null
     private var mAddMessageImageView: ImageView? = null
 
@@ -71,8 +73,6 @@ class ChatActivity : BaseActivity() {
         mFirebaseAuth = FirebaseAuth.getInstance()
         mFirebaseUser = mFirebaseAuth!!.currentUser
 
-        // Initialize ProgressBar and RecyclerView.
-        mProgressBar = findViewById(R.id.progressBar)
         mMessageRecyclerView = findViewById(R.id.messageRecyclerView)
         mLinearLayoutManager = LinearLayoutManager(this)
         mLinearLayoutManager!!.stackFromEnd = true
@@ -113,8 +113,6 @@ class ChatActivity : BaseActivity() {
                     position: Int,
                     friendlyMessage: ChatMessage
                 ) {
-                    mProgressBar!!.visibility = ProgressBar.INVISIBLE
-
                     if (friendlyMessage.message.isNotEmpty()) {
                         viewHolder.messengerTextView.text = friendlyMessage.message
                         viewHolder.messageTextView.visibility = TextView.VISIBLE

@@ -20,11 +20,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.ruitzei.foodie.model.LatLong
-import com.ruitzei.foodie.model.LocationPermission
-import com.ruitzei.foodie.model.UserData
-import com.ruitzei.foodie.model.UserProperties
-import com.ruitzei.foodie.ui.chat.ChatActivity
+import com.ruitzei.foodie.model.*
+import com.ruitzei.foodie.ui.bottomsheet.OrderDetailBottomSheet
 import com.ruitzei.foodie.ui.order.OrderViewModel
 import com.ruitzei.foodie.ui.orderList.OrdersListActivity
 import com.ruitzei.foodie.utils.BaseActivity
@@ -197,7 +194,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     Log.d(TAG, "Success active orders")
                     it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
                         Log.d(TAG, "Have ID on first order $it")
-                        showActiveOrderLayout(delivery.id, it.data.first().id)
+                        showActiveOrderLayout(delivery.id, it.data.first())
+                    } ?: run {
+                        active_order_layout.visibility = View.GONE
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -208,6 +207,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
         homeViewModel.openOrdersListAction.observe(this, Observer {
             startActivityForResult(OrdersListActivity.newIntent(context!!), 123)
+        })
+
+        orderViewModel.orderFinishedAction.observe(this, Observer {
+            orderViewModel.getActiveOrders()
         })
 
         orderViewModel.getActiveOrders()
@@ -260,7 +263,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             Looper.myLooper())
     }
 
-    private fun showActiveOrderLayout(deliveryId: String, orderId: String) {
+    private fun showActiveOrderLayout(deliveryId: String, order: Order) {
         active_order_layout.visibility = View.VISIBLE
 
         if (UserData.user?.isDelivery == true) {
@@ -273,7 +276,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         }
 
         active_order_layout.setOnClickListener {
-            startActivity(ChatActivity.newIntent(context!!, orderId))
+            OrderDetailBottomSheet.newInstance(
+                order,
+                UserData.user?.isDelivery == true
+            ).show(childFragmentManager, "")
         }
     }
 

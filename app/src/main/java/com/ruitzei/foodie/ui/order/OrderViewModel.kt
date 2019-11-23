@@ -39,6 +39,8 @@ class OrderViewModel: ViewModel() {
     val activeOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
     val unassignedOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
 
+    val orderFinishedAction: ActionLiveData<Boolean> = ActionLiveData()
+
     init {
         order.value = OrderPostObject()
     }
