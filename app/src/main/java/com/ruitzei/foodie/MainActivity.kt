@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,19 +14,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ruitzei.foodie.model.UserData
+import com.ruitzei.foodie.ui.home.HomeViewModel
 import com.ruitzei.foodie.ui.order.NewOrderActivity
 import com.ruitzei.foodie.utils.BaseActivity
+import com.ruitzei.foodie.utils.viewModelProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 
 class MainActivity : BaseActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        homeViewModel = viewModelProvider()
 
         auth = FirebaseAuth.getInstance()
 
@@ -37,12 +40,14 @@ class MainActivity : BaseActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
+                R.id.navigation_home, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         if (UserData.user?.isDelivery == true) {
-            fab.visibility = View.GONE
+            fab.setOnClickListener {
+                homeViewModel.openOrdersListAction.sendAction(true)
+            }
         } else {
             fab.setOnClickListener {
                 startActivity(NewOrderActivity.newIntent(this))

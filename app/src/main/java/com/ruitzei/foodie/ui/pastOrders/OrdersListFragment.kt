@@ -1,5 +1,6 @@
 package com.ruitzei.foodie.ui.pastOrders
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -57,6 +58,9 @@ class OrdersListFragment : Fragment() {
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success claiming order")
                     Toast.makeText(context, "Pedido asignado", Toast.LENGTH_SHORT).show()
+
+                    activity?.setResult(RESULT_OK)
+                    activity?.finish()
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "error claiming order")

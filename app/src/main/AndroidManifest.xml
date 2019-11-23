@@ -94,6 +94,10 @@
             android:windowSoftInputMode="stateVisible|adjustResize">
         </activity>
 
+        <activity
+            android:name=".ui.orderList.OrdersListActivity">
+        </activity>
+
         <service android:name=".firebase.MyFirebaseMessagingService" />
     </application>
 
