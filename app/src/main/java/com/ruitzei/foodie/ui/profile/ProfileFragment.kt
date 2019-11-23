@@ -1,11 +1,13 @@
 package com.ruitzei.foodie.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
-import com.ruitzei.foodie.R
+import com.facebook.login.LoginManager
 import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.model.UserData
+import com.ruitzei.foodie.ui.login.LoginActivity
 import com.ruitzei.foodie.utils.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -25,7 +27,7 @@ class ProfileFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(com.ruitzei.foodie.R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,10 +35,20 @@ class ProfileFragment : BaseFragment() {
 
         val user = UserData.user
         updateUserData(user)
+
+        logout_btn.setOnClickListener {
+            LoginManager.getInstance().logOut()
+            PreferenceManager.removeToken()
+
+            val intent = Intent(context!!, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 
     private fun updateUserData(user: User?) {
-        profile_name.setText(user?.name)
+        profile_name.setText(user?.fullName)
         profile_phone.setText(user?.phoneNumber)
         profile_email.setText(user?.mail)
         profile_rol.setText(if (user?.isDelivery == true) "Delivery" else "Usuario")
@@ -52,7 +64,7 @@ class ProfileFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.menu_edit -> {
+            com.ruitzei.foodie.R.id.menu_edit -> {
                 activity?.runOnUiThread {
                     saveMenuItem?.isVisible = true
                     editMenuItem?.isVisible = false
@@ -60,7 +72,7 @@ class ProfileFragment : BaseFragment() {
                     setEnabled()
                 }
             }
-            R.id.menu_save -> {
+            com.ruitzei.foodie.R.id.menu_save -> {
                 saveMenuItem?.isVisible = false
                 editMenuItem?.isVisible = true
                 activity?.runOnUiThread {
@@ -81,10 +93,10 @@ class ProfileFragment : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
         menu?.clear()
 
-        inflater?.inflate(R.menu.profile_menu, menu)
+        inflater?.inflate(com.ruitzei.foodie.R.menu.profile_menu, menu)
 
-        saveMenuItem = menu?.findItem(R.id.menu_save)
-        editMenuItem = menu?.findItem(R.id.menu_edit)
+        saveMenuItem = menu?.findItem(com.ruitzei.foodie.R.id.menu_save)
+        editMenuItem = menu?.findItem(com.ruitzei.foodie.R.id.menu_edit)
     }
 
     private fun setEnabled() {

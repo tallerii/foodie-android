@@ -9,6 +9,7 @@ import com.ruitzei.foodie.service.Api
 import com.ruitzei.foodie.service.RequestCallbacks
 import com.ruitzei.foodie.service.RestClient
 import com.ruitzei.foodie.utils.ActionLiveData
+import com.ruitzei.foodie.utils.PreferenceManager
 
 class LoginViewModel : ViewModel() {
 
@@ -40,6 +41,8 @@ class LoginViewModel : ViewModel() {
 
     private fun loginWithAppToken(token: String) {
         UserData.token = token
+        PreferenceManager.saveToken(token)
+
         FoodieApplication.instance?.api = RestClient.createPublicApi()
 
         Api.getLoggedInUserData( object : RequestCallbacks<User> {

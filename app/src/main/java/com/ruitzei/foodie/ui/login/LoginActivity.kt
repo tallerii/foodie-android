@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ruitzei.foodie.MainActivity
 import com.ruitzei.foodie.utils.BaseActivity
+import com.ruitzei.foodie.utils.PreferenceManager
 import com.ruitzei.foodie.utils.viewModelProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -36,7 +37,6 @@ class LoginActivity: BaseActivity() {
         viewModel = viewModelProvider()
 
         viewModel?.loginAction?.observe(this, Observer {
-
             val intent = MainActivity.newIntent(context = baseContext)
             startActivity(intent)
         })
@@ -72,6 +72,20 @@ class LoginActivity: BaseActivity() {
                 Toast.makeText(baseContext, exception.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
+
+        tryToLogin()
+    }
+
+    private fun tryToLogin() {
+        // Checking if the user has already logged
+        val token = PreferenceManager.getToken()
+
+        if (token.isNotEmpty() && isLoggedIn()) {
+            val accessToken = AccessToken.getCurrentAccessToken()
+            handleFacebookAccessToken(accessToken)
+
+            Toast.makeText(this, "Ya estaba logueado", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun isLoggedIn(): Boolean {
