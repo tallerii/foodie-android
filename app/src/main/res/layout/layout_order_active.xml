@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:gravity="center"
         android:textColor="@color/red"
-        android:text="Tenés un pedido en curso! \nTapeá para chatear!"
+        android:text="Tenés un pedido en curso! \nTapeá para ver detalles!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </TextView>

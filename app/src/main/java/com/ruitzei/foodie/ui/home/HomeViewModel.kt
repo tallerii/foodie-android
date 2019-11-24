@@ -11,6 +11,7 @@ import com.ruitzei.foodie.utils.Resource
 
 class HomeViewModel : ViewModel() {
     val updateLatLongAction: ActionLiveData<Resource<User>> = ActionLiveData()
+    val openOrdersListAction: ActionLiveData<Boolean> = ActionLiveData()
 
     fun updateLatLong(latLong: LatLong) {
         updateLatLongAction?.sendAction(Resource.loading())

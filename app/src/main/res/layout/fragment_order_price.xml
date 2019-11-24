@@ -40,7 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_subtitle"
         android:layout_height="wrap_content"
-        android:hint="Introduce una descripción">
+        android:hint="Introducir monton">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/order_price"
@@ -48,7 +48,7 @@
             android:lines="5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Introduce una descripción"/>
+            android:hint="Introducir monto"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

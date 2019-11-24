@@ -2,6 +2,7 @@ package com.ruitzei.foodie.service
 
 import com.ruitzei.foodie.application.FoodieApplication
 import com.ruitzei.foodie.model.*
+import okhttp3.ResponseBody
 import java.net.HttpURLConnection.HTTP_CREATED
 import java.net.HttpURLConnection.HTTP_OK
 
@@ -25,13 +26,13 @@ object Api {
         request.enqueue(apiCalls!!.login(LoginPostData( username, password)), listener)
     }
 
-    fun performFacebookLogin(fbToken: String, listener: RequestCallbacks<LoginResponse>) {
+    fun performFacebookLogin(fbToken: String, fcmToken: String, listener: RequestCallbacks<LoginResponse>) {
         val request = object: AbstractRequest<LoginResponse>() {
             override val successCode: Int
                 get() = HTTP_OK
         }
 
-        request.enqueue(apiCalls!!.loginWithFacebook(FacebookLoginPostData(fbToken)), listener)
+        request.enqueue(apiCalls!!.loginWithFacebook(FacebookLoginPostData(fbToken, fcmToken)), listener)
     }
 
     fun getUserData(userId: String, listener: RequestCallbacks<User>) {
@@ -109,13 +110,12 @@ object Api {
         request.enqueue(apiCalls!!.getOrders("unassigned"), listener)
     }
 
-    fun claimOrder(orderId: String, listener: RequestCallbacks<Order>) {
-        val request = object: AbstractRequest<Order>() {
+    fun claimOrder(orderId: String, listener: RequestCallbacks<ResponseBody>) {
+        val request = object: AbstractRequest<ResponseBody>() {
             override val successCode: Int
                 get() = HTTP_OK
         }
 
-        val userId = UserData.user?.id
-        request.enqueue(apiCalls!!.claimOrder(orderId, PatchOrderWithUserData(userId!!)), listener)
+        request.enqueue(apiCalls!!.claimOrder(orderId), listener)
     }
 }

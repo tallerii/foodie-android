@@ -1,16 +1,19 @@
 package com.ruitzei.foodie.ui.pastOrders
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.Order
 import com.ruitzei.foodie.model.UserData
+import com.ruitzei.foodie.ui.bottomsheet.OrderDetailBottomSheet
 import com.ruitzei.foodie.ui.order.OrderViewModel
 import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.activityViewModelProvider
@@ -55,9 +58,14 @@ class OrdersListFragment : Fragment() {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success claiming order")
+                    Toast.makeText(context, "Pedido asignado", Toast.LENGTH_SHORT).show()
+
+                    activity?.setResult(RESULT_OK)
+                    activity?.finish()
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "error claiming order")
+                    Toast.makeText(context, "Error asignando pedido", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -78,7 +86,7 @@ class OrdersListFragment : Fragment() {
 
     fun handleOrderClick(order: Order) {
         if (UserData?.user?.isDelivery == true) {
-            orderViewModel.claimOrder(order)
+            OrderDetailBottomSheet.newInstance(order, true, true).show(childFragmentManager, "")
         }
     }
 

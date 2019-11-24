@@ -1,5 +1,7 @@
 package com.ruitzei.foodie.ui.home
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
@@ -18,13 +20,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.ruitzei.foodie.model.LatLong
-import com.ruitzei.foodie.model.LocationPermission
-import com.ruitzei.foodie.model.UserData
-import com.ruitzei.foodie.model.UserProperties
-import com.ruitzei.foodie.ui.chat.ChatActivity
+import com.ruitzei.foodie.model.*
+import com.ruitzei.foodie.ui.bottomsheet.OrderDetailBottomSheet
 import com.ruitzei.foodie.ui.order.OrderViewModel
-import com.ruitzei.foodie.utils.*
+import com.ruitzei.foodie.ui.orderList.OrdersListActivity
+import com.ruitzei.foodie.utils.BaseActivity
+import com.ruitzei.foodie.utils.BaseFragment
+import com.ruitzei.foodie.utils.Resource
+import com.ruitzei.foodie.utils.activityViewModelProvider
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -165,7 +168,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homeViewModel = viewModelProvider()
+        homeViewModel = activityViewModelProvider()
         orderViewModel = activityViewModelProvider()
 
         homeViewModel.updateLatLongAction.observe(this, Observer {
@@ -191,13 +194,23 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     Log.d(TAG, "Success active orders")
                     it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
                         Log.d(TAG, "Have ID on first order $it")
-                        showActiveOrderLayout(delivery.id, it.data.first().id)
+                        showActiveOrderLayout(delivery.id, it.data.first())
+                    } ?: run {
+                        active_order_layout.visibility = View.GONE
                     }
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "Error Active orders")
                 }
             }
+        })
+
+        homeViewModel.openOrdersListAction.observe(this, Observer {
+            startActivityForResult(OrdersListActivity.newIntent(context!!), 123)
+        })
+
+        orderViewModel.orderFinishedAction.observe(this, Observer {
+            orderViewModel.getActiveOrders()
         })
 
         orderViewModel.getActiveOrders()
@@ -211,6 +224,14 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         map?.animateCamera(
             CameraUpdateFactory.newLatLngZoom(point,
                 ZOOM_LEVEL))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            orderViewModel.getActiveOrders()
+        }
     }
 
     fun postUser() {
@@ -242,7 +263,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             Looper.myLooper())
     }
 
-    private fun showActiveOrderLayout(deliveryId: String, orderId: String) {
+    private fun showActiveOrderLayout(deliveryId: String, order: Order) {
         active_order_layout.visibility = View.VISIBLE
 
         if (UserData.user?.isDelivery == true) {
@@ -255,7 +276,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         }
 
         active_order_layout.setOnClickListener {
-            startActivity(ChatActivity.newIntent(context!!, orderId))
+            OrderDetailBottomSheet.newInstance(
+                order,
+                UserData.user?.isDelivery == true
+            ).show(childFragmentManager, "")
         }
     }
 

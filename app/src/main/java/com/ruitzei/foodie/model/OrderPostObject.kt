@@ -1,6 +1,8 @@
 package com.ruitzei.foodie.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /*
@@ -21,21 +23,24 @@ import java.util.*
 }
  */
 
+@Parcelize
 class Order (
     @SerializedName("id") var id: String = "",
     @SerializedName("properties") var properties: OrderProperties? = null
-)
+): Parcelable
 
+@Parcelize
 class OrderProperties (
     @SerializedName("notes") var notes: String = "",
     @SerializedName("date_time_ordered") var createdAt: Date? = null,
-    @SerializedName("price") var price: String = "",
+    @SerializedName("price") var price: Double = 0.0,
+    @SerializedName("delivery_price") var deliveryPrice: Double = 0.0,
     @SerializedName("start_location") var startLocation: Address? = null,
     @SerializedName("end_location") var endLocation: Address? = null,
     @SerializedName("delivered") var delivered: Boolean = false,
     @SerializedName("delivery_user") var deliveryUser: User? = null,
     @SerializedName("client_user") var clientUser: User? = null
-)
+): Parcelable
 
 class OrderPostObject (
     @SerializedName("notes") var description: String = "",

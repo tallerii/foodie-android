@@ -1,16 +1,19 @@
 package com.ruitzei.foodie.model
 
+import android.os.Parcelable
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @IgnoreExtraProperties
 class User(
     @SerializedName("id") var id: String = "",
     @SerializedName("properties") var userProperties: UserProperties? = null,
     @SerializedName("geometry") var geometry: Address? = null
-) {
+): Parcelable {
 
     @Exclude
     fun toMap(): Map<String, Any?> {
@@ -60,6 +63,7 @@ class User(
 }
 
 @IgnoreExtraProperties
+@Parcelize
 data class UserProperties (
     @PropertyName("first_name") @SerializedName("first_name") var name: String = "",
     @PropertyName("last_name") @SerializedName("last_name") var lastName: String = "",
@@ -68,4 +72,4 @@ data class UserProperties (
     @SerializedName("is_delivery") var isDelivery: Boolean = false,
     @SerializedName("balance") var balance: Double = 0.0,
     @SerializedName("avatar") var avatar: String = ""
-)
+): Parcelable

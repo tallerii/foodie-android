@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Foodie</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Pedidos</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_user_profile">Mi perfil</string>
     <string name="facebook_app_id">2541386966092751</string>

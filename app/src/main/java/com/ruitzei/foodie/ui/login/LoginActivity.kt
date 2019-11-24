@@ -10,10 +10,13 @@ import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ruitzei.foodie.MainActivity
 import com.ruitzei.foodie.utils.BaseActivity
+import com.ruitzei.foodie.utils.PreferenceManager
 import com.ruitzei.foodie.utils.viewModelProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -34,7 +37,6 @@ class LoginActivity: BaseActivity() {
         viewModel = viewModelProvider()
 
         viewModel?.loginAction?.observe(this, Observer {
-
             val intent = MainActivity.newIntent(context = baseContext)
             startActivity(intent)
         })
@@ -70,6 +72,20 @@ class LoginActivity: BaseActivity() {
                 Toast.makeText(baseContext, exception.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
+
+        tryToLogin()
+    }
+
+    private fun tryToLogin() {
+        // Checking if the user has already logged
+        val token = PreferenceManager.getToken()
+
+        if (token.isNotEmpty() && isLoggedIn()) {
+            val accessToken = AccessToken.getCurrentAccessToken()
+            handleFacebookAccessToken(accessToken)
+
+            Toast.makeText(this, "Ya estaba logueado", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun isLoggedIn(): Boolean {
@@ -84,7 +100,10 @@ class LoginActivity: BaseActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("Login", "signInWithCredential:success")
-                    viewModel?.performFBLogin(accesToken.token)
+                    getFirebaseInstanceID {
+                        viewModel?.performFBLogin(accesToken.token, it)
+
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("Login", "signInWithCredential:failure", task.exception)
@@ -108,6 +127,21 @@ class LoginActivity: BaseActivity() {
                     viewModel?.performLogin(login_username.text.toString(), login_password.text.toString())
                 }
         }
+    }
+
+    private fun getFirebaseInstanceID(success: (String) -> Unit) {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(MainActivity.TAG, "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token.orEmpty()
+                success(token)
+                Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+            })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

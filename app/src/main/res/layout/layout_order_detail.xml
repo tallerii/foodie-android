@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/detail_user_name"
+        style="@style/BottomSheetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="asdasdasdas"/>
+
+    <TextView
+        android:layout_marginTop="16dp"
+        style="@style/BottomSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dirección de Pickup"/>
+
+    <TextView
+        android:id="@+id/detail_pickup_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asd"/>
+
+    <TextView
+        style="@style/BottomSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dirección de Delivery"/>
+
+    <TextView
+        android:id="@+id/detail_delivery_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asd"/>
+
+    <TextView
+        style="@style/BottomSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Que va a buscar?"/>
+
+    <TextView
+        android:id="@+id/detail_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asd"/>
+
+    <TextView
+        style="@style/BottomSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio"/>
+
+    <TextView
+        android:id="@+id/detail_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asd"/>
+
+    <TextView
+        style="@style/BottomSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Costo envio?"/>
+
+    <TextView
+        android:id="@+id/detail_delivery_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asd"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_marginTop="20dp"
+        android:text="Abrir chat"
+        android:id="@+id/detail_open_chat"
+        android:theme="@style/Theme.MaterialComponents"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:strokeColor="@color/white"
+        app:strokeWidth="2dp"
+        android:layout_height="wrap_content">
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:text="Finalizar pedido"
+        android:id="@+id/detail_order_finish"
+        android:theme="@style/Theme.MaterialComponents"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:textColor="@color/colorPrimaryDark"
+        app:backgroundTint="@color/white"
+        app:strokeColor="@color/colorPrimaryDark"
+        app:strokeWidth="2dp"
+        android:layout_height="wrap_content">
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:text="Tomar pedido"
+        android:visibility="gone"
+        android:id="@+id/detail_take_order"
+        android:theme="@style/Theme.MaterialComponents"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:textColor="@color/colorPrimaryDark"
+        app:backgroundTint="@color/white"
+        app:strokeColor="@color/colorPrimaryDark"
+        app:strokeWidth="2dp"
+        android:layout_height="wrap_content">
+    </com.google.android.material.button.MaterialButton>
+</LinearLayout>
