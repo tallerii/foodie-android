@@ -292,15 +292,19 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d(TAG, "Successfully listened to order change")
 
-                val latLong = p0.getValue(LatLong::class.java)
+                try {
+                    val latLong = p0.getValue(LatLong::class.java)
 
-                val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
-                map?.clear()
-                map?.addMarker(
-                    MarkerOptions().position(deliveryPosition)
-                        .title("Delivery")
-                )
-                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(deliveryPosition, ZOOM_LEVEL))
+                    val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
+                    map?.clear()
+                    map?.addMarker(
+                        MarkerOptions().position(deliveryPosition)
+                            .title("Delivery")
+                    )
+                    map?.moveCamera(CameraUpdateFactory.newLatLngZoom(deliveryPosition, ZOOM_LEVEL))
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception caught", e)
+                }
             }
         })
     }

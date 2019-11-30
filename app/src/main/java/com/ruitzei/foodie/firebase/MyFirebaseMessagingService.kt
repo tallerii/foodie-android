@@ -51,6 +51,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+        sendNotification(remoteMessage.notification?.body.orEmpty())
     }
     // [END receive_message]
 
@@ -105,8 +106,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_camera_alt_black_24dp)
-            .setContentTitle("content title")
-            .setContentText(messageBody)
+            .setContentTitle("Actualización en tu pedido")
+            .setContentText("El estado del pedido ahora es $messageBody")
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
@@ -121,7 +122,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(1 /* ID of notification */, notificationBuilder.build())
     }
 
     companion object {
