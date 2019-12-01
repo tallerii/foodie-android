@@ -4,12 +4,12 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,6 +42,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var orderViewModel: OrderViewModel
     private lateinit var usersReference: DatabaseReference
+
+    private var deliveryId: String = ""
 
     private var map: GoogleMap? = null
 
@@ -94,18 +96,11 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     // Get user value
                     val user = dataSnapshot.getValue(UserProperties::class.java)
 
-                    // [START_EXCLUDE]
                     if (user == null) {
                         // User does not exist
                         Log.e(TAG, "User $userId is unexpectedly null")
-                        Toast.makeText(context,
-                            "Error: could not fetch user.",
-                            Toast.LENGTH_SHORT).show()
-
                         createNewUser()
-                    } else {
                     }
-                    // [END_EXCLUDE]
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -155,6 +150,20 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 //        }
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        usersReference.child(deliveryId).removeEventListener(childEventListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (deliveryId.isNotEmpty() && UserData.user?.isDelivery == false) {
+            usersReference.child(deliveryId).addValueEventListener(childEventListener)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -194,6 +203,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                     Log.d(TAG, "Success active orders")
                     it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
                         Log.d(TAG, "Have ID on first order $it")
+                        deliveryId = delivery.id
                         showActiveOrderLayout(delivery.id, it.data.first())
                     } ?: run {
                         active_order_layout.visibility = View.GONE
@@ -218,6 +228,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
 
     fun showMyLocation(location: Location) {
         val point = LatLng(location.latitude, location.longitude)
+        map?.clear()
         map?.addMarker(MarkerOptions().position(point))
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM_LEVEL))
 
@@ -245,8 +256,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         map.uiSettings.isZoomGesturesEnabled= true
 
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.setInterval(120000) // two minute interval
-        mLocationRequest!!.setFastestInterval(120000)
+        mLocationRequest!!.setInterval(5000) // two minute interval
+        mLocationRequest!!.setFastestInterval(5000)
         mLocationRequest!!.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
     }
 
@@ -269,7 +280,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         if (UserData.user?.isDelivery == true) {
             if (activity is BaseActivity) {
                 Log.d(TAG, "IS base activity")
-                (activity as BaseActivity).performPermissionAction(startLocationUpdates, LocationPermission())
+                Handler().post {
+                    (activity as BaseActivity).performPermissionAction(startLocationUpdates, LocationPermission())
+                }
             }
         } else {
             listenToDeliveryUpdates(deliveryId)
@@ -283,31 +296,35 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         }
     }
 
-    private fun listenToDeliveryUpdates(deliveryId: String) {
-        usersReference.child(deliveryId).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Log.d(TAG, "Listening to order got cancelled")
+    val childEventListener = object : ValueEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            Log.d(TAG, "Listening to order got cancelled")
+        }
+
+        override fun onDataChange(p0: DataSnapshot) {
+            Log.d(TAG, "Successfully listened to order change")
+
+            try {
+                val latLong = p0.getValue(LatLong::class.java)
+
+                val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
+                map?.clear()
+                map?.addMarker(
+                    MarkerOptions().position(deliveryPosition)
+                        .title("Delivery")
+                )
+                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(deliveryPosition, ZOOM_LEVEL))
+            } catch (e: Exception) {
+                map?.clear()
+                Log.e(TAG, "Exception caught", e)
             }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                Log.d(TAG, "Successfully listened to order change")
-
-                try {
-                    val latLong = p0.getValue(LatLong::class.java)
-
-                    val deliveryPosition = LatLng(latLong?.lat ?: 0.0, latLong?.lon ?: 0.0)
-                    map?.clear()
-                    map?.addMarker(
-                        MarkerOptions().position(deliveryPosition)
-                            .title("Delivery")
-                    )
-                    map?.moveCamera(CameraUpdateFactory.newLatLngZoom(deliveryPosition, ZOOM_LEVEL))
-                } catch (e: Exception) {
-                    Log.e(TAG, "Exception caught", e)
-                }
-            }
-        })
+        }
     }
+
+    private fun listenToDeliveryUpdates(deliveryId: String) {
+        usersReference.child(deliveryId).addValueEventListener(childEventListener)
+    }
+
 
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName
