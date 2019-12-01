@@ -149,6 +149,17 @@ class LoginActivity: BaseActivity() {
 
                     viewModel?.performLogin(login_username.text.toString(), login_password.text.toString())
                 }
+        } else {
+            auth.signInAnonymously()
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Login", "signInWithCredential:success")
+                    } else {
+                        Log.w("Login", "signInWithCredential:failure", task.exception)
+                    }
+
+                    viewModel?.performLogin(login_username.text.toString(), login_password.text.toString())
+                }
         }
     }
 
