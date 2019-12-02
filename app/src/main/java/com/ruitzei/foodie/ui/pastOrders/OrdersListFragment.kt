@@ -66,7 +66,7 @@ class OrdersListFragment : Fragment() {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success")
-                    showAdapter(it.data.orEmpty())
+                    showAdapter(it.data.orEmpty().filter { it.properties?.clientUser?.id == UserData.user?.id || it.properties?.deliveryUser?.id == UserData.user?.id })
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "Error")
@@ -113,12 +113,12 @@ class OrdersListFragment : Fragment() {
     }
 
     fun handleOrderClick(order: Order) {
-        if (showsOld) {
+        if (showsOld && UserData.user?.isDelivery == false) {
             RatingModal.newInstance(
                 ratingModel = null,
                 orderId = order.id
             ).show(childFragmentManager, "modal")
-        } else if (UserData?.user?.isDelivery == true) {
+        } else if (UserData?.user?.isDelivery == true && !showsOld) {
             OrderDetailBottomSheet.newInstance(order, true, true).show(childFragmentManager, "")
         }
     }
