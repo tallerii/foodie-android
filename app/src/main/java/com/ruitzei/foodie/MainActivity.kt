@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,6 +18,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.ui.home.HomeViewModel
 import com.ruitzei.foodie.ui.order.NewOrderActivity
+import com.ruitzei.foodie.ui.orderList.OrdersListActivity
 import com.ruitzei.foodie.utils.BaseActivity
 import com.ruitzei.foodie.utils.viewModelProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -71,6 +74,22 @@ class MainActivity : BaseActivity() {
                 Log.d(TAG, token)
                 Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
             })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.home_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_latest-> {
+                startActivity(OrdersListActivity.newIntent(this, showsOld = true))
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

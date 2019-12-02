@@ -256,8 +256,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
         map.uiSettings.isZoomGesturesEnabled= true
 
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.setInterval(5000) // two minute interval
-        mLocationRequest!!.setFastestInterval(5000)
+        mLocationRequest!!.setInterval(10000) // two minute interval
+        mLocationRequest!!.setFastestInterval(10000)
         mLocationRequest!!.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
     }
 

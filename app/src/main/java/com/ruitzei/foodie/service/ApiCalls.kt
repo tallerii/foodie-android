@@ -60,4 +60,7 @@ interface ApiCalls {
 
     @PUT("orders/{id}")
     fun claimOrder(@Path("id") orderId: String): Call<ResponseBody>
+
+    @POST("review")
+    fun reviewOrder(@Body ratingModel: RatingModel): Call<RatingModel>
 }
