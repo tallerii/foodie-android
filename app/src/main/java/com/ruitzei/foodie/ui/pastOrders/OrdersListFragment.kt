@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruitzei.foodie.R
-import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderProperties
 import com.ruitzei.foodie.model.UserData
 import com.ruitzei.foodie.ui.bottomsheet.OrderDetailBottomSheet
 import com.ruitzei.foodie.ui.modal.RatingModal
@@ -66,7 +66,7 @@ class OrdersListFragment : Fragment() {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success")
-                    showAdapter(it.data.orEmpty().filter { it.properties?.clientUser?.id == UserData.user?.id || it.properties?.deliveryUser?.id == UserData.user?.id })
+                    showAdapter(it.data.orEmpty().filter { it?.clientUser?.id == UserData.user?.id || it?.deliveryUser?.id == UserData.user?.id })
                 }
                 Resource.Status.ERROR -> {
                     Log.d(TAG, "Error")
@@ -101,7 +101,7 @@ class OrdersListFragment : Fragment() {
         }
     }
 
-    fun showAdapter(orders: List<Order>) {
+    fun showAdapter(orders: List<OrderProperties>) {
         val adapter = OrdersAdapter(orders) {
             handleOrderClick(it)
         }
@@ -112,7 +112,7 @@ class OrdersListFragment : Fragment() {
         }
     }
 
-    fun handleOrderClick(order: Order) {
+    fun handleOrderClick(order: OrderProperties) {
         if (showsOld && UserData.user?.isDelivery == false) {
             RatingModal.newInstance(
                 ratingModel = null,

@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ruitzei.foodie.R
-import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderProperties
 import kotlinx.android.synthetic.main.item_order.view.*
 
-class OrdersAdapter(private val orders: List<Order>,
-                    private val listener: (Order) -> Unit
+class OrdersAdapter(private val orders: List<OrderProperties>,
+                    private val listener: (OrderProperties) -> Unit
 ) : RecyclerView.Adapter<OrdersAdapter.OrdersViewHolder>() {
 
 
@@ -27,10 +27,10 @@ class OrdersAdapter(private val orders: List<Order>,
     override fun getItemCount(): Int = orders.size
 
     class OrdersViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        fun bindOrder(order: Order, listener: (Order) -> Unit) = with(itemView) {
-            itemView.item_order_title.text = "Pedido de ${order?.properties?.clientUser?.name} ${order?.properties?.clientUser?.lastName}"
-            itemView.item_order_subtitle.text = order?.properties?.notes
-            itemView.item_order_amount.text = "$ ${order?.properties?.price}"
+        fun bindOrder(order: OrderProperties, listener: (OrderProperties) -> Unit) = with(itemView) {
+            itemView.item_order_title.text = "Pedido de ${order?.clientUser?.name} ${order?.clientUser?.lastName}"
+            itemView.item_order_subtitle.text = order?.notes
+            itemView.item_order_amount.text = "$ ${order?.price}"
 
             itemView.setOnClickListener {
                 listener.invoke(order)

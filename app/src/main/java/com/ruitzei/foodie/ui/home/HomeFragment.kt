@@ -201,7 +201,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
                 }
                 Resource.Status.SUCCESS -> {
                     Log.d(TAG, "Success active orders")
-                    it.data?.firstOrNull()?.properties?.deliveryUser?.let {delivery ->
+                    it.data?.firstOrNull()?.deliveryUser?.let {delivery ->
                         Log.d(TAG, "Have ID on first order $it")
                         deliveryId = delivery.id
                         showActiveOrderLayout(delivery.id, it.data.first())
@@ -274,7 +274,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, ValueEventListener {
             Looper.myLooper())
     }
 
-    private fun showActiveOrderLayout(deliveryId: String, order: Order) {
+    private fun showActiveOrderLayout(deliveryId: String, order: OrderProperties) {
         active_order_layout.visibility = View.VISIBLE
 
         if (UserData.user?.isDelivery == true) {

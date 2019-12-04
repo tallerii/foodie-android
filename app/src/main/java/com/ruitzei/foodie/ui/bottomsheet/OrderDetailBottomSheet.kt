@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderProperties
 import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.ui.chat.ChatActivity
 import com.ruitzei.foodie.ui.order.OrderViewModel
@@ -15,7 +16,7 @@ import com.ruitzei.foodie.utils.toStringWithTwoDecimals
 import kotlinx.android.synthetic.main.layout_order_detail.view.*
 
 class OrderDetailBottomSheet: BaseBottomSheet() {
-    private var order: Order? = null
+    private var order: OrderProperties? = null
     private var isDelivery: Boolean = false
     private var isDetail: Boolean = false
     private var viewModel: OrderViewModel? = null
@@ -54,19 +55,19 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
         val user: User?
         val text: String
         if (isDelivery) {
-            user = order?.properties?.clientUser
+            user = order?.clientUser
             text = "Entregar a ${user?.fullName}`"
         } else {
-            user = order?.properties?.deliveryUser
+            user = order?.deliveryUser
             text = "Tu pedido lo trae ${user?.fullName}`"
         }
 
-        val total = order?.properties?.price
-        val deliveryPrice = order?.properties?.deliveryPrice
-        val notes = order?.properties?.notes
+        val total = order?.price
+        val deliveryPrice = order?.deliveryPrice
+        val notes = order?.notes
 
-        val startLocation = order?.properties?.startLocation?.coordinates
-        val endLocation = order?.properties?.endLocation?.coordinates
+        val startLocation = order?.startLocation?.coordinates
+        val endLocation = order?.endLocation?.coordinates
 
 
         childContentView.detail_user_name.text = text
@@ -108,7 +109,7 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
     companion object {
         val TAG: String = OrderDetailBottomSheet::class.java.simpleName
 
-        fun newInstance(order: Order, isDelivery: Boolean, isDetail: Boolean = false): OrderDetailBottomSheet {
+        fun newInstance(order: OrderProperties, isDelivery: Boolean, isDetail: Boolean = false): OrderDetailBottomSheet {
             return OrderDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable("order", order)

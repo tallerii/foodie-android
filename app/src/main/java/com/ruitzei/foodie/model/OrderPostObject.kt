@@ -31,6 +31,7 @@ class Order (
 
 @Parcelize
 class OrderProperties (
+    @SerializedName("id") var id: String = "",
     @SerializedName("notes") var notes: String = "",
     @SerializedName("date_time_ordered") var createdAt: Date? = null,
     @SerializedName("price") var price: Double = 0.0,
