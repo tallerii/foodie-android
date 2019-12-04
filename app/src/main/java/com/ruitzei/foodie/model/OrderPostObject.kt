@@ -40,6 +40,8 @@ class OrderProperties (
     @SerializedName("end_location") var endLocation: Address? = null,
     @SerializedName("delivered") var delivered: Boolean = false,
     @SerializedName("delivery_user") var deliveryUser: User? = null,
+    @SerializedName("start_address") var startAddress: String? = null,
+    @SerializedName("end_address") var endAddress: String? = null,
     @SerializedName("client_user") var clientUser: User? = null
 ): Parcelable
 
@@ -47,5 +49,7 @@ class OrderPostObject (
     @SerializedName("notes") var description: String = "",
     @SerializedName("price") var amount: String = "",
     @SerializedName("start_location") var addressFrom: Address? = null,
-    @SerializedName("end_location") var addressTo: Address? = null
+    @SerializedName("end_location") var addressTo: Address? = null,
+    @SerializedName("start_address") var startAddress: String? = null,
+    @SerializedName("end_address") var endAddress: String? = null
 )

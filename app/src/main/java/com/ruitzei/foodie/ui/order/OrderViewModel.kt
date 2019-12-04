@@ -50,12 +50,14 @@ class OrderViewModel: ViewModel() {
         order.value?.amount = amount
     }
 
-    fun setAddressFrom(addressFrom: Address) {
+    fun setAddressFrom(addressFrom: Address, stringAddress: String) {
         order.value?.addressFrom = addressFrom
+        order.value?.startAddress = stringAddress
     }
 
-    fun setAddressTo(addressTo: Address) {
+    fun setAddressTo(addressTo: Address, stringAddress: String) {
         order.value?.addressTo = addressTo
+        order.value?.endAddress= stringAddress
     }
 
     fun endOrder() {

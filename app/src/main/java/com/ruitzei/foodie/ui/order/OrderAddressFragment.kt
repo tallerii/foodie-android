@@ -83,12 +83,15 @@ class OrderAddressFragment : BaseFragment() {
 
                     if (addressType == AddressType.FROM) {
                         viewModel?.setAddressFrom(
-                            it.data!!
+                            it.data!!,
+                            address_address.text.toString()
                         )
+
                         viewModel?.addressToAction?.sendAction("")
                     } else {
                         viewModel?.setAddressTo(
-                            it.data!!
+                            it.data!!,
+                            address_address.text.toString()
                         )
                         viewModel?.endOrder()
                     }

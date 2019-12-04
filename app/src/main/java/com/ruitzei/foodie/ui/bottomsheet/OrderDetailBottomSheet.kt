@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import com.ruitzei.foodie.R
-import com.ruitzei.foodie.model.Order
 import com.ruitzei.foodie.model.OrderProperties
 import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.ui.chat.ChatActivity
@@ -66,8 +65,8 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
         val deliveryPrice = order?.deliveryPrice
         val notes = order?.notes
 
-        val startLocation = order?.startLocation?.coordinates
-        val endLocation = order?.endLocation?.coordinates
+        val startLocation = order?.startAddress
+        val endLocation = order?.endAddress
 
 
         childContentView.detail_user_name.text = text
