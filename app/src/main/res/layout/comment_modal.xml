@@ -36,7 +36,10 @@
         android:layout_marginTop="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:stepSize="1"
+        android:min="1"
         android:numStars="5"
+        android:theme="@style/RatingBar"
+        android:progressTint="@color/colorPrimary"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

@@ -42,7 +42,8 @@ class OrderProperties (
     @SerializedName("delivery_user") var deliveryUser: User? = null,
     @SerializedName("start_address") var startAddress: String? = null,
     @SerializedName("end_address") var endAddress: String? = null,
-    @SerializedName("client_user") var clientUser: User? = null
+    @SerializedName("client_user") var clientUser: User? = null,
+    @SerializedName("reviews") var reviews: List<RatingModel> = listOf()
 ): Parcelable
 
 class OrderPostObject (

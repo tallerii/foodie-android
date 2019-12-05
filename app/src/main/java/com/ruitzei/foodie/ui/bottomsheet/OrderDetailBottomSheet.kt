@@ -1,10 +1,11 @@
 package com.ruitzei.foodie.ui.bottomsheet
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import com.ruitzei.foodie.R
 import com.ruitzei.foodie.model.OrderProperties
 import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.ui.chat.ChatActivity
@@ -13,6 +14,7 @@ import com.ruitzei.foodie.utils.Resource
 import com.ruitzei.foodie.utils.activityViewModelProvider
 import com.ruitzei.foodie.utils.toStringWithTwoDecimals
 import kotlinx.android.synthetic.main.layout_order_detail.view.*
+
 
 class OrderDetailBottomSheet: BaseBottomSheet() {
     private var order: OrderProperties? = null
@@ -48,7 +50,7 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
         })
     }
 
-    override fun getLayoutId(): Int = R.layout.layout_order_detail
+    override fun getLayoutId(): Int = com.ruitzei.foodie.R.layout.layout_order_detail
 
     override fun onChildContentViewCreated() {
         val user: User?
@@ -71,7 +73,15 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
 
         childContentView.detail_user_name.text = text
         childContentView.detail_pickup_address.text = startLocation.toString()
+        childContentView.detail_pickup_address.setOnClickListener {
+            openMapsOnLocation(order?.startLocation?.coordinates?.first().toString(), order?.startLocation?.coordinates?.last().toString(), startLocation.orEmpty())
+        }
+
         childContentView.detail_delivery_address.text = endLocation.toString()
+        childContentView.detail_delivery_address.setOnClickListener {
+            openMapsOnLocation(order?.endLocation?.coordinates?.first().toString(), order?.endLocation?.coordinates?.last().toString(), endLocation.orEmpty())
+        }
+
         childContentView.detail_notes.text = notes
         childContentView.detail_price.text = total?.toStringWithTwoDecimals()
         childContentView.detail_delivery_price.text = deliveryPrice?.toStringWithTwoDecimals()
@@ -99,6 +109,14 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
             childContentView.detail_open_chat.visibility = View.GONE
             childContentView.detail_order_finish.visibility = View.GONE
         }
+    }
+
+    fun openMapsOnLocation(lat: String, long: String, name: String) {
+        val intent = Intent(
+            android.content.Intent.ACTION_VIEW,
+            Uri.parse("geo:0,0?q=$lat,$long ($name)")
+        )
+        startActivity(intent)
     }
 
     override fun getAvatarUrl(): String? = null

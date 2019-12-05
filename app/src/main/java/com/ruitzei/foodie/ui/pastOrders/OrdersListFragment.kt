@@ -114,10 +114,17 @@ class OrdersListFragment : Fragment() {
 
     fun handleOrderClick(order: OrderProperties) {
         if (showsOld && UserData.user?.isDelivery == false) {
-            RatingModal.newInstance(
-                ratingModel = null,
-                orderId = order.id
-            ).show(childFragmentManager, "modal")
+            if (order.reviews.isEmpty()) {
+                RatingModal.newInstance(
+                    ratingModel = null,
+                    orderId = order.id
+                ).show(childFragmentManager, "modal")
+            } else {
+                RatingModal.newInstance(
+                    ratingModel = order.reviews.first(),
+                    orderId = order.id
+                ).show(childFragmentManager, "modal")
+            }
         } else if (UserData?.user?.isDelivery == true && !showsOld) {
             OrderDetailBottomSheet.newInstance(order, true, true).show(childFragmentManager, "")
         }
