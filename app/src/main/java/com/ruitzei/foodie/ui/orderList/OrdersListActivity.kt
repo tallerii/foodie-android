@@ -16,7 +16,7 @@ class OrdersListActivity : BaseActivity() {
         setContentView(R.layout.layout_holder)
         setSupportActionBar(toolbar)
 
-        startFragment(OrdersListFragment.newInstance())
+        startFragment(OrdersListFragment.newInstance(intent!!.getBooleanExtra("old", false)))
     }
 
     private fun startFragment(fragment: Fragment) {
@@ -27,8 +27,9 @@ class OrdersListActivity : BaseActivity() {
 
     companion object {
         val TAG: String = OrdersListActivity::class.java.simpleName
-        fun newIntent(context: Context): Intent {
+        fun newIntent(context: Context, showsOld: Boolean = false): Intent {
             val intent = Intent(context, OrdersListActivity::class.java)
+            intent.putExtra("old", showsOld)
 
             return intent
         }

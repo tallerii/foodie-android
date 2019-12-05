@@ -31,6 +31,7 @@ class Order (
 
 @Parcelize
 class OrderProperties (
+    @SerializedName("id") var id: String = "",
     @SerializedName("notes") var notes: String = "",
     @SerializedName("date_time_ordered") var createdAt: Date? = null,
     @SerializedName("price") var price: Double = 0.0,
@@ -39,12 +40,17 @@ class OrderProperties (
     @SerializedName("end_location") var endLocation: Address? = null,
     @SerializedName("delivered") var delivered: Boolean = false,
     @SerializedName("delivery_user") var deliveryUser: User? = null,
-    @SerializedName("client_user") var clientUser: User? = null
+    @SerializedName("start_address") var startAddress: String? = null,
+    @SerializedName("end_address") var endAddress: String? = null,
+    @SerializedName("client_user") var clientUser: User? = null,
+    @SerializedName("reviews") var reviews: List<RatingModel> = listOf()
 ): Parcelable
 
 class OrderPostObject (
     @SerializedName("notes") var description: String = "",
     @SerializedName("price") var amount: String = "",
     @SerializedName("start_location") var addressFrom: Address? = null,
-    @SerializedName("end_location") var addressTo: Address? = null
+    @SerializedName("end_location") var addressTo: Address? = null,
+    @SerializedName("start_address") var startAddress: String? = null,
+    @SerializedName("end_address") var endAddress: String? = null
 )

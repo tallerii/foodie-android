@@ -118,4 +118,13 @@ object Api {
 
         request.enqueue(apiCalls!!.claimOrder(orderId), listener)
     }
+
+    fun addReviewToOrder(ratingModel: RatingModel, listener: RequestCallbacks<RatingModel>) {
+        val request = object: AbstractRequest<RatingModel>() {
+            override val successCode: Int
+                get() = HTTP_CREATED
+        }
+
+        request.enqueue(apiCalls!!.reviewOrder(ratingModel), listener)
+    }
 }

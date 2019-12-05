@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/modal_title"
+        android:layout_marginTop="32dp"
+        android:text="Como te fue con el pedido?"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/modal_subtitle"
+        android:text="Tu opinión nos sirve y le podría llegar a ser al util al próximo usuario"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modal_title"
+        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/modal_rating"
+        app:layout_constraintTop_toBottomOf="@+id/modal_subtitle"
+        android:layout_marginTop="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:stepSize="1"
+        android:min="1"
+        android:numStars="5"
+        android:theme="@style/RatingBar"
+        android:progressTint="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/modal_text_input"
+        android:layout_width="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintTop_toBottomOf="@id/modal_rating"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:hint="Introducir un comentario"
+        android:textColorHint="@color/gray">
+
+        <EditText
+            android:id="@+id/modal_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/modal_old_comment"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modal_rating"
+        android:layout_marginBottom="16dp"
+        app:layout_goneMarginTop="50dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingBottom="32dp"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center"
+        tools:text="La comida fue espectacular, lo único, tardaron demasiado, pero la verdad que lo recomiendo un monton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/modal_send"
+        android:text="Enviar"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modal_text_input"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

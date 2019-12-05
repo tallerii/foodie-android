@@ -7,10 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.ruitzei.foodie.application.FoodieApplication
-import com.ruitzei.foodie.model.Address
-import com.ruitzei.foodie.model.Order
-import com.ruitzei.foodie.model.OrderPage
-import com.ruitzei.foodie.model.OrderPostObject
+import com.ruitzei.foodie.model.*
 import com.ruitzei.foodie.service.Api
 import com.ruitzei.foodie.service.RequestCallbacks
 import com.ruitzei.foodie.utils.ActionLiveData
@@ -34,10 +31,10 @@ class OrderViewModel: ViewModel() {
 
     val order: MutableLiveData<OrderPostObject> = MutableLiveData()
 
-    val ordersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
+    val ordersAction: ActionLiveData<Resource<List<OrderProperties>>> = ActionLiveData()
     val claimOrderAction: ActionLiveData<Resource<ResponseBody>> = ActionLiveData()
-    val activeOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
-    val unassignedOrdersAction: ActionLiveData<Resource<List<Order>>> = ActionLiveData()
+    val activeOrdersAction: ActionLiveData<Resource<List<OrderProperties>>> = ActionLiveData()
+    val unassignedOrdersAction: ActionLiveData<Resource<List<OrderProperties>>> = ActionLiveData()
 
     val orderFinishedAction: ActionLiveData<Boolean> = ActionLiveData()
 
@@ -53,12 +50,14 @@ class OrderViewModel: ViewModel() {
         order.value?.amount = amount
     }
 
-    fun setAddressFrom(addressFrom: Address) {
+    fun setAddressFrom(addressFrom: Address, stringAddress: String) {
         order.value?.addressFrom = addressFrom
+        order.value?.startAddress = stringAddress
     }
 
-    fun setAddressTo(addressTo: Address) {
+    fun setAddressTo(addressTo: Address, stringAddress: String) {
         order.value?.addressTo = addressTo
+        order.value?.endAddress= stringAddress
     }
 
     fun endOrder() {
@@ -67,7 +66,7 @@ class OrderViewModel: ViewModel() {
         }
     }
 
-    fun claimOrder(order: Order) {
+    fun claimOrder(order: OrderProperties) {
         claimOrderAction.sendAction(Resource.loading())
 
         Api.claimOrder(order.id, object : RequestCallbacks<ResponseBody> {

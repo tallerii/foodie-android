@@ -1,11 +1,12 @@
 package com.ruitzei.foodie.ui.bottomsheet
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import com.ruitzei.foodie.R
-import com.ruitzei.foodie.model.Order
+import com.ruitzei.foodie.model.OrderProperties
 import com.ruitzei.foodie.model.User
 import com.ruitzei.foodie.ui.chat.ChatActivity
 import com.ruitzei.foodie.ui.order.OrderViewModel
@@ -14,8 +15,9 @@ import com.ruitzei.foodie.utils.activityViewModelProvider
 import com.ruitzei.foodie.utils.toStringWithTwoDecimals
 import kotlinx.android.synthetic.main.layout_order_detail.view.*
 
+
 class OrderDetailBottomSheet: BaseBottomSheet() {
-    private var order: Order? = null
+    private var order: OrderProperties? = null
     private var isDelivery: Boolean = false
     private var isDetail: Boolean = false
     private var viewModel: OrderViewModel? = null
@@ -48,30 +50,38 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
         })
     }
 
-    override fun getLayoutId(): Int = R.layout.layout_order_detail
+    override fun getLayoutId(): Int = com.ruitzei.foodie.R.layout.layout_order_detail
 
     override fun onChildContentViewCreated() {
         val user: User?
         val text: String
         if (isDelivery) {
-            user = order?.properties?.clientUser
+            user = order?.clientUser
             text = "Entregar a ${user?.fullName}`"
         } else {
-            user = order?.properties?.deliveryUser
+            user = order?.deliveryUser
             text = "Tu pedido lo trae ${user?.fullName}`"
         }
 
-        val total = order?.properties?.price
-        val deliveryPrice = order?.properties?.deliveryPrice
-        val notes = order?.properties?.notes
+        val total = order?.price
+        val deliveryPrice = order?.deliveryPrice
+        val notes = order?.notes
 
-        val startLocation = order?.properties?.startLocation?.coordinates
-        val endLocation = order?.properties?.endLocation?.coordinates
+        val startLocation = order?.startAddress
+        val endLocation = order?.endAddress
 
 
         childContentView.detail_user_name.text = text
         childContentView.detail_pickup_address.text = startLocation.toString()
+        childContentView.detail_pickup_address.setOnClickListener {
+            openMapsOnLocation(order?.startLocation?.coordinates?.first().toString(), order?.startLocation?.coordinates?.last().toString(), startLocation.orEmpty())
+        }
+
         childContentView.detail_delivery_address.text = endLocation.toString()
+        childContentView.detail_delivery_address.setOnClickListener {
+            openMapsOnLocation(order?.endLocation?.coordinates?.first().toString(), order?.endLocation?.coordinates?.last().toString(), endLocation.orEmpty())
+        }
+
         childContentView.detail_notes.text = notes
         childContentView.detail_price.text = total?.toStringWithTwoDecimals()
         childContentView.detail_delivery_price.text = deliveryPrice?.toStringWithTwoDecimals()
@@ -101,6 +111,14 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
         }
     }
 
+    fun openMapsOnLocation(lat: String, long: String, name: String) {
+        val intent = Intent(
+            android.content.Intent.ACTION_VIEW,
+            Uri.parse("geo:0,0?q=$lat,$long ($name)")
+        )
+        startActivity(intent)
+    }
+
     override fun getAvatarUrl(): String? = null
 
     override fun getTitle(): String? = "Detalle del pedido"
@@ -108,7 +126,7 @@ class OrderDetailBottomSheet: BaseBottomSheet() {
     companion object {
         val TAG: String = OrderDetailBottomSheet::class.java.simpleName
 
-        fun newInstance(order: Order, isDelivery: Boolean, isDetail: Boolean = false): OrderDetailBottomSheet {
+        fun newInstance(order: OrderProperties, isDelivery: Boolean, isDetail: Boolean = false): OrderDetailBottomSheet {
             return OrderDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable("order", order)
